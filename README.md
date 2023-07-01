@@ -1,0 +1,1 @@
+## Budgets tool for GNUCash
