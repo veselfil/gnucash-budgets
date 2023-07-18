@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Api", "GnuCashBudget.Api\GnuCashBudget.Api.csproj", "{AC5FDC05-DDC8-45FD-852F-0944A61821DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.GnuCashData.Abstractions", "GnuCashBudget.GnuCashData.Abstractions\GnuCashBudget.GnuCashData.Abstractions.csproj", "{D3C95750-FFCC-438C-9D6C-78BF63D530B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.GnuCashData.EntityFramework", "GnuCashBudget.GnuCashData.EntityFramework\GnuCashBudget.GnuCashData.EntityFramework.csproj", "{DCE08775-6E9D-4C2F-9A08-0D8FD0A4D4E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Application", "GnuCashBudget.Application\GnuCashBudget.Application.csproj", "{2211F9ED-A4C2-488A-B972-A862AAEFD8F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC5FDC05-DDC8-45FD-852F-0944A61821DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC5FDC05-DDC8-45FD-852F-0944A61821DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC5FDC05-DDC8-45FD-852F-0944A61821DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC5FDC05-DDC8-45FD-852F-0944A61821DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3C95750-FFCC-438C-9D6C-78BF63D530B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3C95750-FFCC-438C-9D6C-78BF63D530B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3C95750-FFCC-438C-9D6C-78BF63D530B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3C95750-FFCC-438C-9D6C-78BF63D530B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE08775-6E9D-4C2F-9A08-0D8FD0A4D4E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE08775-6E9D-4C2F-9A08-0D8FD0A4D4E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE08775-6E9D-4C2F-9A08-0D8FD0A4D4E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE08775-6E9D-4C2F-9A08-0D8FD0A4D4E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2211F9ED-A4C2-488A-B972-A862AAEFD8F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2211F9ED-A4C2-488A-B972-A862AAEFD8F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2211F9ED-A4C2-488A-B972-A862AAEFD8F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2211F9ED-A4C2-488A-B972-A862AAEFD8F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
