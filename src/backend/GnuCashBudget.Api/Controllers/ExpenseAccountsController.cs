@@ -17,9 +17,9 @@ public class ExpenseAccountsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Account>> GetAllExpenseAccounts()
+    public async Task<IEnumerable<Account>> GetAllExpenseAccounts([FromQuery] bool bottomLevelOnly = false)
     {
-        var response = await _sender.Send(new GetExpenseAccountsRequest());
+        var response = await _sender.Send(new GetExpenseAccountsRequest(bottomLevelOnly));
         return response.Accounts;
     }
 }

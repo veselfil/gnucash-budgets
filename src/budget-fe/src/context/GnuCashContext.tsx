@@ -1,5 +1,4 @@
 import React, {createContext, PropsWithChildren, useState} from 'react';
-import axios from 'axios';
 import {ExpenseAccountsService} from "../gc-client";
 
 

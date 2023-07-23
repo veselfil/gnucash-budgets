@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using GnuCashBudget.Application.Requests;
 using GnuCashBudget.Application.Responses;
 using GnuCashBudget.GnuCashData.Abstractions;
@@ -17,9 +18,10 @@ public class GetExpenseAccountsHandler: IRequestHandler<GetExpenseAccountsReques
 
     public async Task<GetExpenseAccountsResponse> Handle(GetExpenseAccountsRequest request, CancellationToken cancellationToken)
     {
+        var accounts = await _accountsRepo.GetAccountsByType(AccountType.Expense);
         return new GetExpenseAccountsResponse
         {
-            Accounts = await _accountsRepo.GetAccountsByType(AccountType.Expense)
+            Accounts = accounts.Where(x => !request.BottomLevelOnly || !x.ChildAccounts.Any())
         };
     }
 }

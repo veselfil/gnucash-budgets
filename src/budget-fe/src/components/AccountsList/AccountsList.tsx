@@ -1,21 +1,24 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {useContextNullGuarded} from "../../contextHelpers";
-import {GnuCashContext} from "../../context/GnuCashContext";
-import {ExpenseAccountsService} from "../../gc-client";
+import {Account, ExpenseAccountsService} from "../../gc-client";
+import AccountPicker from "../AccountPicker/AccountPicker";
 
 
 export const AccountsList: React.FC = () => {
-    const [accounts, setAccounts] = useState<string[]>([])
+    const [accounts, setAccounts] = useState<Account[]>([])
     useEffect(() => {
-        (async () => {
-            const accounts = await ExpenseAccountsService.getExpenseAccounts();
-            setAccounts(accounts.map(x => x.name!));
-        })();
+        const fetchData = async () => {
+            const accounts = await ExpenseAccountsService.getExpenseAccounts(true);
+            setAccounts(accounts);
+        }
+        
+        fetchData().catch(console.error);
     }, [])
     
-    return (
-        <ul>
-            {accounts.map((name, index) => (<li key={index}>{name}</li>))}
-        </ul>
-    )
+    if (accounts != null)
+    {
+        return (
+            <AccountPicker accounts={accounts} />
+        )    
+    }
+    else return <div>Loading</div>;
 }

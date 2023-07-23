@@ -1,15 +1,14 @@
 import './App.css';
-import {BudgetSetupLine} from "./components/BudgetSetupLine/BudgetSetupLine";
 import {OpenAPI} from "./gc-client";
 import {GnuCashContextProvider} from "./context/GnuCashContext";
-import {AccountsList} from "./components/AccountsList/AccountsList";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import BudgetsSetupPage from "./pages/BudgetsSetupPage/BudgetsSetupPage";
+import NavigationBar from "./components/NavigationBar/NavigationBar";
 function App() {
   return (
       <GnuCashContextProvider>
-          <div className="App">
-              <AccountsList />
-          </div>      
+          <NavigationBar />
+          <BudgetsSetupPage />
       </GnuCashContextProvider>
   );
 }

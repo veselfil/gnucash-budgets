@@ -10,4 +10,5 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { Account } from './models/Account';
 export { AccountType } from './models/AccountType';
 
+export { AccountsService } from './services/AccountsService';
 export { ExpenseAccountsService } from './services/ExpenseAccountsService';

@@ -3,7 +3,4 @@ using MediatR;
 
 namespace GnuCashBudget.Application.Requests;
 
-public class GetExpenseAccountsRequest: IRequest<GetExpenseAccountsResponse>
-{
-    
-}
+public record GetExpenseAccountsRequest(bool BottomLevelOnly) : IRequest<GetExpenseAccountsResponse>;
