@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Account, ExpenseAccountsService} from "../../gc-client";
 import AccountPicker from "../AccountPicker/AccountPicker";
 
-
 export const AccountsList: React.FC = () => {
     const [accounts, setAccounts] = useState<Account[]>([])
     useEffect(() => {

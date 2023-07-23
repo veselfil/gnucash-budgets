@@ -4404,9 +4404,11 @@ __metadata:
     "@types/react-router-dom": ^5.3.3
     axios: ^1.4.0
     bootstrap: ^5.3.0
+    moment: ^2.29.4
     openapi-typescript-codegen: ^0.25.0
     react: ^18.2.0
     react-bootstrap: ^2.8.0
+    react-data-grid: ^7.0.0-beta.34
     react-dom: ^18.2.0
     react-router-dom: ^6.14.2
     react-scripts: 5.0.1
@@ -4674,6 +4676,13 @@ __metadata:
     strip-ansi: ^6.0.0
     wrap-ansi: ^7.0.0
   checksum: ce2e8f578a4813806788ac399b9e866297740eecd4ad1823c27fd344d78b22c5f8597d548adbcc46f0573e43e21e751f39446c5a5e804a12aace402b7a315d7f
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^1.1.1":
+  version: 1.2.1
+  resolution: "clsx@npm:1.2.1"
+  checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
   languageName: node
   linkType: hard
 
@@ -9230,6 +9239,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment@npm:^2.29.4":
+  version: 2.29.4
+  resolution: "moment@npm:2.29.4"
+  checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -10956,6 +10972,18 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 589f64354ae03872a111fe3d37ad9b5dc2c69480edfd4b4f912a7d59cc15311df3f0374def08d5d6b63024b1674483daa862004e53bc5fac426d891993484ddc
+  languageName: node
+  linkType: hard
+
+"react-data-grid@npm:^7.0.0-beta.34":
+  version: 7.0.0-canary.49
+  resolution: "react-data-grid@npm:7.0.0-canary.49"
+  dependencies:
+    clsx: ^1.1.1
+  peerDependencies:
+    react: ^16.14 || ^17.0
+    react-dom: ^16.14 || ^17.0
+  checksum: fe57d441a5e56dac39a0f7e06979a27d5606515653ead31fc06f9c2fe08ebaf88ff4ab70f1565dd356b343cf4612137dea2d188a40a7e246b85dd5aa2589da04
   languageName: node
   linkType: hard
 

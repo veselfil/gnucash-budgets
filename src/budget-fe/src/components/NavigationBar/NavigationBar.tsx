@@ -3,7 +3,7 @@ import {Navbar, Nav, NavDropdown, Container} from 'react-bootstrap';
 
 const NavigationBar: React.FC = () => {
     return (<Navbar expand="lg" className="bg-body-tertiary">
-        <Container>
+        <Container fluid>
             <Navbar.Brand href="#home">GNU Cash budgets</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">

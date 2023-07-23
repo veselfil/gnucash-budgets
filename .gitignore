@@ -401,3 +401,5 @@ testfiles/*
 src/budget-fe/node_modules
 src/budget-fe/.yarn
 .idea
+
+bin
