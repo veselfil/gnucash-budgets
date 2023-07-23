@@ -17,7 +17,7 @@ const DateBoundsInput: React.FC<DateBoundsInputProps> = props => {
                     <Form.Group>
                         <Form.Label>Start date</Form.Label>
                         <Form.Control type="date" 
-                                      value={props.dateRange.startDate.toString()} 
+                                      value={props.dateRange.startDate.toISOString().split('T')[0]} 
                                       onChange={event => props.onRangeChanged({ 
                                           ...props.dateRange, startDate: new Date(event.currentTarget.value) })} />
                     </Form.Group>
@@ -27,7 +27,7 @@ const DateBoundsInput: React.FC<DateBoundsInputProps> = props => {
                 <Form>
                     <Form.Group>
                         <Form.Label>Start date</Form.Label>
-                        <Form.Control type="date" value={props.dateRange.endDate.toString()}
+                        <Form.Control type="date" value={props.dateRange.endDate.toISOString().split('T')[0]}
                                       onChange={event => props.onRangeChanged({ 
                                           ...props.dateRange, endDate: new Date(event.currentTarget.value) })}/>
                     </Form.Group>
