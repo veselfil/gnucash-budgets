@@ -17,6 +17,12 @@ public class EntityFrameworkAccountsRepository : IAccountRepository
         _dataContext = dataContext;
     }
 
+    public async Task<Account?> Find(string accountId)
+    {
+        var accountEntity = await _dataContext.Accounts.FirstOrDefaultAsync(x => x.Id == accountId);
+        return accountEntity != null ? MapAccount(accountEntity) : null;
+    }
+
     public async Task<ImmutableList<Account>> GetAllAccounts()
     {
         return await GetFullAccountTree();

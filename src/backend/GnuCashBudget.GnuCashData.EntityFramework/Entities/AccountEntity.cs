@@ -13,7 +13,7 @@ public class AccountEntity
     [Column("account_type", TypeName = "text(2048)")]
     public AccountType Type { get; set; }
 
-    [Column("commodity_guid")] public string CommodityId { get; set; }
+    [Column("commodity_guid")] public string? CommodityId { get; set; }
 
     [Column("commodity_scu")] public int CommodityScu { get; set; }
 

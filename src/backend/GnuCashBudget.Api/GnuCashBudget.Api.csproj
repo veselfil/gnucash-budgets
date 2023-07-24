@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GnuCashBudget.Application\GnuCashBudget.Application.csproj" />
+      <ProjectReference Include="..\GnuCashBudget.Data.EntityFramework\GnuCashBudget.Data.EntityFramework.csproj" />
       <ProjectReference Include="..\GnuCashBudget.GnuCashData.EntityFramework\GnuCashBudget.GnuCashData.EntityFramework.csproj" />
     </ItemGroup>
 </Project>

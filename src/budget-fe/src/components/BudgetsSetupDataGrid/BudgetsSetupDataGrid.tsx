@@ -1,13 +1,15 @@
 import React from 'react';
-// import 'react-data-grid/lib/styles.css';
-import DataGrid, {Column, TextEditor} from 'react-data-grid';
-import {Account} from "../../gc-client";
+import DataGrid, {Column, RowsChangeData, TextEditor} from 'react-data-grid';
+import {Account, BudgetedAccountResponse} from "../../gc-client";
 import {DateRange} from "../../models/DateRange";
 import moment from "moment";
+import {budgetKeyToString, BudgetsMap} from "../../models/BudgetsMap";
 
 interface BudgetsSetupDataGridProps {
-    accounts: Account[]
-    dateRange: DateRange    
+    accounts: BudgetedAccountResponse[]
+    budgets: BudgetsMap
+    dateRange: DateRange   
+    onBudgetChanged: (account: BudgetedAccountResponse, budgetValue: number, dateString: string) => void;
 }
 
 interface Row {
@@ -52,17 +54,30 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
     
     const expensesString = "Expenses:";
     const rows: Row[] = props.accounts
-        .map(account => ({ accountName: account.fullName!.substring(expensesString.length) }))
-        .map(row => {
+        .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { accountName: account.fullName!.substring(expensesString.length) } as Row }))
+        .map(x => {
+            let { budgetedAccountId, row } = x;
             [...iterateDateRange(props.dateRange)].forEach(m => {
-                row = { ...row, [yearMonthToString(m)]: "200" }
+                const key = budgetKeyToString({ dateString: yearMonthToString(m), budgetedAccountId: budgetedAccountId!})
+                row = { 
+                    ...row as Row, 
+                    [yearMonthToString(m)]: Object.hasOwn(props.budgets, key) ? props.budgets[key] : "" 
+                } as Row;
             })
             
             return row;
         });
-    
+    function handleRowsChange(rows: Row[], data: RowsChangeData<Row>) {
+        data.indexes.forEach(index => {
+            const row = rows[index];
+            const newValue = row[data.column.key];
+            const account = props.accounts.filter(x => x.fullName == expensesString + row.accountName)[0];
+            props.onBudgetChanged(account, parseFloat(newValue), data.column.key);
+        })
+    }
+
     return (
-        <DataGrid rows={rows} columns={columns} />
+        <DataGrid rows={rows} columns={columns} onRowsChange={handleRowsChange} />
     )
 } 
 

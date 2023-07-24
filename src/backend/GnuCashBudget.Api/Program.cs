@@ -2,6 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using GnuCashBudget.Api.Configuration;
 using GnuCashBudget.Application;
+using GnuCashBudget.Data.Abstractions.Repositories;
+using GnuCashBudget.Data.EntityFramework;
+using GnuCashBudget.Data.EntityFramework.Repositories;
 using GnuCashBudget.GnuCashData.Abstractions;
 using GnuCashBudget.GnuCashData.EntityFramework;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +13,11 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -27,8 +30,17 @@ builder.Services.AddDbContext<GnuCashContext>((provider, builder) =>
     builder.EnableSensitiveDataLogging();
 });
 
+builder.Services.AddDbContext<BudgetsContext>((provider, builder) =>
+{
+    var sourceOptions = provider.GetRequiredService<IOptions<SourceOptions>>();
+    builder.UseSqlite($"Data Source={sourceOptions.Value.BudgetsFile}");
+    builder.EnableSensitiveDataLogging();
+});
+
 builder.Services.AddScoped<IAccountRepository, EntityFrameworkAccountsRepository>();
-// builder.Services.AddApplicationRequestHandlers();
+builder.Services.AddScoped<IBudgetedAccountRepository, EntityFrameworkBudgetedAccountsRepository>();
+builder.Services.AddScoped<IBudgetsRepository, EntityFrameworkBudgetsRepository>();
+
 builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssemblyContaining<HandlersMarkerType>();
