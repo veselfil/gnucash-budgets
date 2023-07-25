@@ -71,8 +71,9 @@ const BudgetsSetupPage: React.FC = () => {
             <h2>Setup budgets</h2>
             <DateBoundsInput dateRange={dateRange} 
                              onRangeChanged={setDateRange} />
-            
+            <div style={{height: 12}}></div>
             <AccountPicker accounts={allAccounts} onAccountSelected={handleAccountSelected} />
+            <div style={{height: 12}}></div>
             <BudgetsSetupDataGrid accounts={budgetedAccounts}
                                   budgets={budgets}
                                   onBudgetChanged={budgetHasChanged}

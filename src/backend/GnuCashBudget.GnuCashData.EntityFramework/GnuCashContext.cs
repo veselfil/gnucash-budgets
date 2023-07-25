@@ -24,4 +24,6 @@ public class GnuCashContext : DbContext
     public DbSet<AccountEntity> Accounts { get; set; }
     public DbSet<BookEntity> Books { get; set; }
     public DbSet<CommodityEntity> Commodities { get; set; }
+    public DbSet<TransactionEntity> Transactions { get; set; }
+    public DbSet<SplitEntity> Splits { get; set; }
 }

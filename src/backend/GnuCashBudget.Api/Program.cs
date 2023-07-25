@@ -38,6 +38,7 @@ builder.Services.AddDbContext<BudgetsContext>((provider, builder) =>
 });
 
 builder.Services.AddScoped<IAccountRepository, EntityFrameworkAccountsRepository>();
+builder.Services.AddScoped<IAccountTransactionsRepository, EntityFrameworkAccountTransactionsRepository>();
 builder.Services.AddScoped<IBudgetedAccountRepository, EntityFrameworkBudgetedAccountsRepository>();
 builder.Services.AddScoped<IBudgetsRepository, EntityFrameworkBudgetsRepository>();
 
