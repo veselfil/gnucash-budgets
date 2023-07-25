@@ -9,6 +9,7 @@
 
 
     <ItemGroup>
+      <ProjectReference Include="..\GnuCashBudget.Data.Abstractions\GnuCashBudget.Data.Abstractions.csproj" />
       <ProjectReference Include="..\GnuCashBudget.GnuCashData.Abstractions\GnuCashBudget.GnuCashData.Abstractions.csproj" />
     </ItemGroup>
 

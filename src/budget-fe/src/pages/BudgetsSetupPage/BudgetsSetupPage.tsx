@@ -5,25 +5,66 @@ import Col from 'react-bootstrap/Col';
 import Form from "react-bootstrap/Form";
 import DateBoundsInput from "../../components/DateBoundsInput/DateBoundsInput";
 import {DateRange} from "../../models/DateRange";
-import {Button} from "react-bootstrap";
-import {Account, ExpenseAccountsService} from "../../gc-client";
+import {
+    Account,
+    BudgetedAccountResponse,
+    BudgetedAccountsService, BudgetResponse,
+    BudgetsService,
+    ExpenseAccountsService
+} from "../../gc-client";
 import BudgetsSetupDataGrid from "../../components/BudgetsSetupDataGrid/BudgetsSetupDataGrid";
+import AccountPicker from "../../components/AccountPicker/AccountPicker";
+import moment from "moment";
+import {budgetKeyToString, BudgetsKey, BudgetsMap} from "../../models/BudgetsMap";
 
 const BudgetsSetupPage: React.FC = () => {
     const [dateRange, setDateRange] = useState<DateRange>({ 
         startDate: new Date("2023-01-01"),
         endDate: new Date("2023-12-31")});
     
-    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [allAccounts, setAllAccounts] = useState<Account[]>([]);
+    const [budgetedAccounts, setBudgetedAccounts] = useState<BudgetedAccountResponse[]>([]);
+    const [budgets, setBudgets] = useState<BudgetsMap>({});
 
+    async function fetchAllAccounts() {
+        const accounts = await ExpenseAccountsService.getExpenseAccounts(true);
+        setAllAccounts(accounts);
+    }
+
+    async function fetchBudgetedAccounts () {
+        const budgeted = await BudgetedAccountsService.getBudgetedAccounts();
+        setBudgetedAccounts(budgeted.accounts!);
+    }
+    
+    async function fetchBudgets () {
+        const response = await BudgetsService.getBudgets(
+            moment(dateRange.startDate).format("yyyy-MM-DD"), 
+            moment(dateRange.endDate).format("yyyy-MM-DD"));
+        
+        let budgetsObject = {} as BudgetsMap;
+        response.budgets?.forEach(budget => {
+            const key = { budgetedAccountId: budget.budgetedAccountId, dateString: moment(budget.startDate).format("yyyy-MM") } as BudgetsKey;
+            budgetsObject = { ...budgetsObject,  [budgetKeyToString(key)]: budget.amount! };
+        })
+        
+        setBudgets(budgetsObject);
+    }
+    
     useEffect(() => {
-        const fetchData = async () => {
-            const accounts = await ExpenseAccountsService.getExpenseAccounts(true);
-            setAccounts(accounts);
-        }
-
-        fetchData().catch(console.error);
+        fetchAllAccounts().catch(console.error);
+        fetchBudgetedAccounts().catch(console.error);
+        fetchBudgets().catch(console.error);
     }, [])
+    
+    async function handleAccountSelected (account: Account) {
+        await BudgetedAccountsService.postBudgetedAccounts({ accountGuid: account.id });
+        await fetchBudgetedAccounts();
+    }
+    
+    function budgetHasChanged (account: BudgetedAccountResponse, amount: number, dateString: string) {
+        BudgetsService.putBudgets({ accountId: account.budgetedAccountId, budgetId: 0, amount: amount, date: dateString + "-01" })
+        setBudgets({ ...budgets, [budgetKeyToString({ budgetedAccountId: account.budgetedAccountId!, dateString: dateString })]: amount })
+    }
     
     return (
         <Container fluid>
@@ -31,8 +72,11 @@ const BudgetsSetupPage: React.FC = () => {
             <DateBoundsInput dateRange={dateRange} 
                              onRangeChanged={setDateRange} />
             
-            
-            <BudgetsSetupDataGrid accounts={accounts} dateRange={dateRange} />
+            <AccountPicker accounts={allAccounts} onAccountSelected={handleAccountSelected} />
+            <BudgetsSetupDataGrid accounts={budgetedAccounts}
+                                  budgets={budgets}
+                                  onBudgetChanged={budgetHasChanged}
+                                  dateRange={dateRange} />
         </Container>
     )
 }

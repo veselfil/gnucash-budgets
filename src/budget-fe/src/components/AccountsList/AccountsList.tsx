@@ -12,12 +12,6 @@ export const AccountsList: React.FC = () => {
         
         fetchData().catch(console.error);
     }, [])
-    
-    if (accounts != null)
-    {
-        return (
-            <AccountPicker accounts={accounts} />
-        )    
-    }
-    else return <div>Loading</div>;
+
+    return <div>Loading</div>;
 }

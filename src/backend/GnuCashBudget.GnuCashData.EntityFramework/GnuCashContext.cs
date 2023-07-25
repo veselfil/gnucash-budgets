@@ -5,8 +5,9 @@ namespace GnuCashBudget.GnuCashData.EntityFramework;
 
 public class GnuCashContext : DbContext
 {
-    public GnuCashContext(DbContextOptions options) : base(options)
+    public GnuCashContext(DbContextOptions<GnuCashContext> options) : base(options)
     {
+        ChangeTracker.AutoDetectChangesEnabled = false;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
