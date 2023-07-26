@@ -48,7 +48,7 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
         });
 
     const columns: Column<Row>[] = [
-        { key: "accountName", name: "accountName", editable: true, width: 200, resizable: true, },
+        { key: "accountName", name: "Account", editable: true, width: 200, resizable: true, },
         ...monthColumns
     ];
     
