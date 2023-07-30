@@ -19,8 +19,11 @@ public class EntityFrameworkAccountsRepository : IAccountRepository
 
     public async Task<Account?> Find(string accountId)
     {
-        var accountEntity = await _dataContext.Accounts.FirstOrDefaultAsync(x => x.Id == accountId);
-        return accountEntity != null ? MapAccount(accountEntity) : null;
+        // TODO: This is fucking horrible
+        var accountTree = await this.GetFullAccountTree();
+        var flatList = this.FlattenAccountTree(accountTree);
+
+        return flatList.FirstOrDefault(x => x.Id == accountId);
     }
 
     public async Task<ImmutableList<Account>> GetAllAccounts()

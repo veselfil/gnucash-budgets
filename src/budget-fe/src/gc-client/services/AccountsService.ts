@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Account } from '../models/Account';
+import type { GetTransactionsForAccountInDateRangeResponse } from '../models/GetTransactionsForAccountInDateRangeResponse';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -18,6 +19,31 @@ export class AccountsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/accounts',
+        });
+    }
+
+    /**
+     * @param accountId
+     * @param dateFrom
+     * @param dateTo
+     * @returns GetTransactionsForAccountInDateRangeResponse Success
+     * @throws ApiError
+     */
+    public static getAccountsTransactions(
+        accountId: string,
+        dateFrom?: string,
+        dateTo?: string,
+    ): CancelablePromise<GetTransactionsForAccountInDateRangeResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/accounts/{accountId}/transactions',
+            path: {
+                'accountId': accountId,
+            },
+            query: {
+                'dateFrom': dateFrom,
+                'dateTo': dateTo,
+            },
         });
     }
 
