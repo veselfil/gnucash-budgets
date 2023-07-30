@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Abstract = GnuCashBudget.GnuCashData.Abstractions.Models;
 using AccountType = GnuCashBudget.GnuCashData.EntityFramework.Entities.AccountType;
 
-namespace GnuCashBudget.GnuCashData.EntityFramework;
+namespace GnuCashBudget.GnuCashData.EntityFramework.Repositories;
 
 public class EntityFrameworkAccountsRepository : IAccountRepository
 {

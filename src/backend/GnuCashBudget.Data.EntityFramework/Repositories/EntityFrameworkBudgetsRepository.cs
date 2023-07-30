@@ -2,6 +2,7 @@ using GnuCashBudget.Data.Abstractions.Repositories;
 using GnuCashBudget.Data.EntityFramework.Entities;
 using GnuCashBudget.Data.EntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace GnuCashBudget.Data.EntityFramework.Repositories;
 
@@ -32,6 +33,15 @@ public class EntityFrameworkBudgetsRepository: IBudgetsRepository
     {
         var entities = await _context.Budgets
             .Where(x => x.StartDate >= from && x.EndDate <= to)
+            .ToListAsync();
+
+        return entities.Select(MapToDomain).ToList();
+    }
+
+    public async Task<IEnumerable<Budget>> GetBudgetsForAccount(int budgetedAccountId)
+    {
+        var entities = await _context.Budgets
+            .Where(x => x.BudgetedAccountId == budgetedAccountId)
             .ToListAsync();
 
         return entities.Select(MapToDomain).ToList();

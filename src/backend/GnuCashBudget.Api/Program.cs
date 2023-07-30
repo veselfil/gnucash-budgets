@@ -7,6 +7,7 @@ using GnuCashBudget.Data.EntityFramework;
 using GnuCashBudget.Data.EntityFramework.Repositories;
 using GnuCashBudget.GnuCashData.Abstractions;
 using GnuCashBudget.GnuCashData.EntityFramework;
+using GnuCashBudget.GnuCashData.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
