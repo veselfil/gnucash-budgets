@@ -5,7 +5,7 @@ using MediatR;
 
 namespace GnuCashBudget.Application.Handlers;
 
-public class SetBudgetHandler: IRequestHandler<SetBudgetRequest>
+public class SetBudgetHandler : IRequestHandler<SetBudgetRequest>
 {
     private readonly IBudgetsRepository _budgetsRepository;
 
@@ -16,7 +16,14 @@ public class SetBudgetHandler: IRequestHandler<SetBudgetRequest>
 
     public async Task Handle(SetBudgetRequest request, CancellationToken cancellationToken)
     {
-        var budget = new Budget(request.BudgetId, request.AccountId, request.Date, request.Date, request.Amount);
-        await _budgetsRepository.UpsertBudget(budget);
+        var budget = await _budgetsRepository.GetBudgetOrDefault(request.AccountId, request.Date, request.Date);
+        if (budget != null && request.Amount == 0)
+        {
+            await _budgetsRepository.RemoveBudget(budget.Id);
+            return;
+        }
+
+        budget ??= new Budget(0, request.AccountId, request.Date, request.Date, request.Amount);
+        await _budgetsRepository.UpsertBudget(budget with { Amount = request.Amount });
     }
 }

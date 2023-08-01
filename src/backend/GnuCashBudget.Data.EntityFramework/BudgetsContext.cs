@@ -10,6 +10,7 @@ public class BudgetsContext: DbContext
 
     public BudgetsContext(DbContextOptions<BudgetsContext> options) : base(options)
     {
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         ChangeTracker.AutoDetectChangesEnabled = false;
     }
 }

@@ -1,0 +1,5 @@
+- [x] Make sure editing a budget actually edits it
+- [ ] Remove budgets
+- [ ] Handle currencies for balance
+- [ ] Redirect to balance by default
+- [ ] Initial balance?

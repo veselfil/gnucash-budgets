@@ -29,6 +29,28 @@ public class EntityFrameworkBudgetsRepository: IBudgetsRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task RemoveBudget(int budgetId)
+    {
+        var budgetOrNull = await _context.Budgets.SingleOrDefaultAsync(x => x.Id == budgetId);
+        if (budgetOrNull != null)
+        {
+            _context.Remove(budgetOrNull);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task<Budget?> GetBudgetOrDefault(int budgetedAccountId, DateTime from, DateTime to)
+    {
+        return await _context.Budgets.FirstOrDefaultAsync(x => x.BudgetedAccountId == budgetedAccountId &&
+                                                               x.StartDate == from &&
+                                                               x.EndDate == to) 
+        switch
+        {
+            null => null, 
+            var e => MapToDomain(e)
+        };
+    }
+
     public async Task<IEnumerable<Budget>> GetBudgetsInTimeRange(DateTime from, DateTime to)
     {
         var entities = await _context.Budgets

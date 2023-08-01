@@ -25,8 +25,7 @@ interface YearMonth {
 function* iterateDateRange(range: DateRange): Generator<YearMonth> { 
     let cursor = moment(range.startDate);
     const endMoment = moment(range.endDate);
-    while (cursor.isBefore(endMoment) || cursor.isSame(endMoment))
-    {
+    while (cursor.isBefore(endMoment) || cursor.isSame(endMoment)) {
         yield { year: cursor.year(), month: cursor.month() + 1 };
         cursor.add(1, 'M');
     }
@@ -57,15 +56,12 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
         .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { accountName: account.fullName!.substring(expensesString.length) } as Row }))
         .map(x => {
             let { budgetedAccountId, row } = x;
-            [...iterateDateRange(props.dateRange)].forEach(m => {
+            return [...iterateDateRange(props.dateRange)].reduce((r, m) => {
                 const key = budgetKeyToString({ dateString: yearMonthToString(m), budgetedAccountId: budgetedAccountId!})
-                row = { 
-                    ...row as Row, 
-                    [yearMonthToString(m)]: Object.hasOwn(props.budgets, key) ? props.budgets[key] : "" 
+                return {
+                    ...r, [yearMonthToString(m)]: Object.hasOwn(props.budgets, key) ? props.budgets[key] : ""
                 } as Row;
-            })
-            
-            return row;
+            }, row);     
         });
     function handleRowsChange(rows: Row[], data: RowsChangeData<Row>) {
         data.indexes.forEach(index => {

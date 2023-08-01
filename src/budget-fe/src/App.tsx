@@ -13,7 +13,7 @@ const router = createBrowserRouter([
         element: <BudgetsSetupPage />
     },
     {
-        path: "/balance",
+        path: "",
         element: <BudgetsBalancePage />
     }
 ])
