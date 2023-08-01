@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type AddBudgetedAccountRequest = {
-    accountGuid?: string | null;
+    accountGuid?: string;
 };
 

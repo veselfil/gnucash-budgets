@@ -6,6 +6,6 @@
 import type { BudgetResponse } from './BudgetResponse';
 
 export type GetBudgetsInRangeResponse = {
-    budgets?: Array<BudgetResponse> | null;
+    budgets?: Array<BudgetResponse>;
 };
 

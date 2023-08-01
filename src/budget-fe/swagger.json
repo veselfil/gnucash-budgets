@@ -322,20 +322,16 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "fullName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "commodity": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "accountType": {
             "$ref": "#/components/schemas/AccountType"
@@ -344,8 +340,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Account"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -386,8 +381,7 @@
         "type": "object",
         "properties": {
           "accountGuid": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -396,12 +390,10 @@
         "type": "object",
         "properties": {
           "accountName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "accountId": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "budgetedAccountId": {
             "type": "integer",
@@ -448,12 +440,10 @@
             "format": "int32"
           },
           "accountId": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "fullName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -465,8 +455,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BalanceResponse"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -478,8 +467,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BudgetResponse"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -488,15 +476,13 @@
         "type": "object",
         "properties": {
           "accountId": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "transactions": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AccountTransactionResponse"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -508,8 +494,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BudgetedAccountResponse"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false

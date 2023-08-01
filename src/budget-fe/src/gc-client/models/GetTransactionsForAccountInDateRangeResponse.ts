@@ -6,7 +6,7 @@
 import type { AccountTransactionResponse } from './AccountTransactionResponse';
 
 export type GetTransactionsForAccountInDateRangeResponse = {
-    accountId?: string | null;
-    transactions?: Array<AccountTransactionResponse> | null;
+    accountId?: string;
+    transactions?: Array<AccountTransactionResponse>;
 };
 

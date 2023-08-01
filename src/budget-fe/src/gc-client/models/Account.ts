@@ -6,11 +6,11 @@
 import type { AccountType } from './AccountType';
 
 export type Account = {
-    id?: string | null;
-    name?: string | null;
-    fullName?: string | null;
-    commodity?: string | null;
+    id?: string;
+    name?: string;
+    fullName?: string;
+    commodity?: string;
     accountType?: AccountType;
-    childAccounts?: Array<Account> | null;
+    childAccounts?: Array<Account>;
 };
 

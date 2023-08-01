@@ -6,6 +6,6 @@
 import type { BudgetedAccountResponse } from './BudgetedAccountResponse';
 
 export type ListBudgetedAccountsResponse = {
-    accounts?: Array<BudgetedAccountResponse> | null;
+    accounts?: Array<BudgetedAccountResponse>;
 };
 

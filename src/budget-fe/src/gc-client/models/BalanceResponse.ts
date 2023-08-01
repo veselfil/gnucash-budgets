@@ -4,8 +4,8 @@
 /* eslint-disable */
 
 export type BalanceResponse = {
-    accountName?: string | null;
-    accountId?: string | null;
+    accountName?: string;
+    accountId?: string;
     budgetedAccountId?: number;
     balance?: number;
 };

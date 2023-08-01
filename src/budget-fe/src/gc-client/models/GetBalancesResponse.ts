@@ -6,6 +6,6 @@
 import type { BalanceResponse } from './BalanceResponse';
 
 export type GetBalancesResponse = {
-    balances?: Array<BalanceResponse> | null;
+    balances?: Array<BalanceResponse>;
 };
 

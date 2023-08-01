@@ -5,7 +5,7 @@
 
 export type BudgetedAccountResponse = {
     budgetedAccountId?: number;
-    accountId?: string | null;
-    fullName?: string | null;
+    accountId?: string;
+    fullName?: string;
 };
 
