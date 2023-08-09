@@ -12,9 +12,13 @@ public class GetBalancesHandler: IRequestHandler<GetBalancesRequest, GetBalances
     private readonly IBudgetedAccountRepository _budgetedAccountsRepository;
     private readonly IAccountTransactionsRepository _accountTransactions;
     private readonly IBudgetsRepository _budgetsRepository;
-    private readonly IAccountRepository _accountRepository;
+    private readonly IExpenseAccountsRepository _accountRepository;
 
-    public GetBalancesHandler(IBudgetedAccountRepository budgetedAccountsRepository, IAccountTransactionsRepository accountTransactions, IBudgetsRepository budgetsRepository, IAccountRepository accountRepository)
+    public GetBalancesHandler(
+        IBudgetedAccountRepository budgetedAccountsRepository, 
+        IAccountTransactionsRepository accountTransactions, 
+        IBudgetsRepository budgetsRepository,
+        IExpenseAccountsRepository accountRepository)
     {
         _budgetedAccountsRepository = budgetedAccountsRepository;
         _accountTransactions = accountTransactions;
@@ -52,12 +56,17 @@ public class GetBalancesHandler: IRequestHandler<GetBalancesRequest, GetBalances
         foreach (var (start, end) in budgetPeriodsRaw)
         {
             var transactionsInPeriod = _accountTransactions.GetTransactionsForAccountInDateRange(
-                gcAccount!, start, end);
+                gcAccount.Id, start, end);
 
-            transactionsSum += await _accountTransactions.GetSumOfTransactions(gcAccount, start, end);
+            transactionsSum += await _accountTransactions.GetSumOfTransactions(gcAccount.Id, start, end);
         }
 
         var budgetsSum = budgets.Sum(x => x.Amount);
-        return new BalanceResponse(gcAccount.FullName, account.AccountGuid, account.Id, budgetsSum - transactionsSum);
+        return new BalanceResponse(
+            gcAccount.FullName,
+            account.AccountGuid,
+            account.Id,
+            budgetsSum - transactionsSum,
+            gcAccount.CurrencyCode);
     }
 }

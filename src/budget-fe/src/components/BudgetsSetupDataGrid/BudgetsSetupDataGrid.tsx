@@ -14,6 +14,7 @@ interface BudgetsSetupDataGridProps {
 
 interface Row {
     accountName: string
+    accountGuid: string
     [key: string]: string
 }
 
@@ -35,7 +36,7 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
     const yearMonthToString = (yearMonth: YearMonth) => 
         `${yearMonth.year}-${yearMonth.month.toLocaleString("cs-CZ", { minimumIntegerDigits: 2 })}`;
 
-    const expensesString = ":Expenses:";
+    const expensesString = "Expenses:";
     const buildAccountName = (accountName: string, currencyCode: string) => 
         `${accountName!.substring(expensesString.length)} (${currencyCode})`;
     
@@ -56,7 +57,7 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
     ];
     
     const rows: Row[] = props.accounts
-        .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { accountName: buildAccountName(account.fullName!, account.currencyCode!) } as Row }))
+        .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { accountGuid: account.accountId, accountName: buildAccountName(account.fullName!, account.currencyCode!) } as Row }))
         .map(x => {
             let { budgetedAccountId, row } = x;
             return [...iterateDateRange(props.dateRange)].reduce((r, m) => {
@@ -69,8 +70,11 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
     function handleRowsChange(rows: Row[], data: RowsChangeData<Row>) {
         data.indexes.forEach(index => {
             const row = rows[index];
-            const newValue = row[data.column.key];
-            const account = props.accounts.filter(x => x.fullName == expensesString + row.accountName)[0];
+            let newValue = row[data.column.key];
+            if (newValue === "")
+               newValue = "0"; 
+            
+            const account = props.accounts.filter(x => x.accountId == row.accountGuid)[0];
             props.onBudgetChanged(account, parseFloat(newValue), data.column.key);
         })
     }

@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import {BalanceResponse, BalanceService} from "../../gc-client";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import {formatCurrency} from "../../helpers/dateFormatting";
 
 
 const BudgetsBalancePage: React.FC = () => {
@@ -25,7 +26,10 @@ const BudgetsBalancePage: React.FC = () => {
             <h2>Budget balances</h2>
             <hr/>
             <Row md={4}>
-                {balances.map((b, index) => <BudgetStatusCard key={index} accountName={b.accountName!} balance={b.balance!}/>)}
+                {balances.map((b, index) => <BudgetStatusCard key={index} 
+                                                              accountName={b.accountName!} 
+                                                              balance={b.balance!}
+                                                              currency={b.currencyCode!} />)}
             </Row>
         </Container>);
 };
@@ -33,6 +37,7 @@ const BudgetsBalancePage: React.FC = () => {
 interface BudgetStatusCardProps {
     accountName: string
     balance: number
+    currency: string
 }
 
 const BudgetStatusCard: React.FC<BudgetStatusCardProps> = props => {
@@ -49,7 +54,7 @@ const BudgetStatusCard: React.FC<BudgetStatusCardProps> = props => {
         <Card className="mb-5" bg={getBackground(props.balance)} text="white">
             <Card.Header>{removeExpensesPrefix(props.accountName)}</Card.Header>
             <Card.Body>
-                <Card.Title>€{props.balance}</Card.Title>
+                <Card.Title>{formatCurrency(props.balance, props.currency)}</Card.Title>
             </Card.Body>
         </Card>
     </Col>;

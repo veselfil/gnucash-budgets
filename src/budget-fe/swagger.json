@@ -402,6 +402,9 @@
           "balance": {
             "type": "number",
             "format": "double"
+          },
+          "currencyCode": {
+            "type": "string"
           }
         },
         "additionalProperties": false

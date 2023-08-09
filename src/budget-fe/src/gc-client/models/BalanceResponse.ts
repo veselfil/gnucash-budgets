@@ -8,5 +8,6 @@ export type BalanceResponse = {
     accountId?: string;
     budgetedAccountId?: number;
     balance?: number;
+    currencyCode?: string;
 };
 

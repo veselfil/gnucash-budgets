@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Container from "react-bootstrap/Container";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from "react-bootstrap/Form";
 import DateBoundsInput from "../../components/DateBoundsInput/DateBoundsInput";
 import {DateRange} from "../../models/DateRange";
 import {
     Account,
     BudgetedAccountResponse,
     BudgetedAccountsService, BudgetResponse,
-    BudgetsService,
+    BudgetsService, ExpenseAccount,
     ExpenseAccountsService
 } from "../../gc-client";
 import BudgetsSetupDataGrid from "../../components/BudgetsSetupDataGrid/BudgetsSetupDataGrid";
@@ -56,7 +53,7 @@ const BudgetsSetupPage: React.FC = () => {
         fetchBudgets().catch(console.error);
     }, [])
     
-    async function handleAccountSelected (account: Account) {
+    async function handleAccountSelected (account: ExpenseAccount) {
         await BudgetedAccountsService.postBudgetedAccounts({ accountGuid: account.id });
         await fetchBudgetedAccounts();
     }

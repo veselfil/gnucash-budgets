@@ -30,7 +30,7 @@ public class GetTransactionsForAccountInDateRangeHandler:
         }
 
         var transactions = await _accountTransactionsRepository.GetTransactionsForAccountInDateRange(
-            account, request.From, request.To);
+            account.Id, request.From, request.To);
 
         return new GetTransactionsForAccountInDateRangeResponse(
             account.Id,

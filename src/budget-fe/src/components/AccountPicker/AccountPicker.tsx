@@ -1,11 +1,11 @@
 import React from 'react';
 import FormSelect from "react-bootstrap/FormSelect";
-import {Account} from "../../gc-client";
+import {ExpenseAccount} from "../../gc-client";
 import {FormControl} from "react-bootstrap";
 
 interface AccountPickerProps {
-    accounts: Account[]
-    onAccountSelected: (account: Account) => void;
+    accounts: ExpenseAccount[]
+    onAccountSelected: (account: ExpenseAccount) => void;
 }
 
 const AccountPicker: React.FC<AccountPickerProps> = (props: AccountPickerProps) => {
@@ -18,7 +18,7 @@ const AccountPicker: React.FC<AccountPickerProps> = (props: AccountPickerProps) 
         <FormSelect aria-label="Default select example" onChange={onChange}>
             <option value="">Select account</option>
             {props.accounts.map(x => (
-                <option value={x.id!} key={x.id!}>{x.fullName} ({x.commodity})</option>
+                <option value={x.id!} key={x.id!}>{x.fullName} ({x.currencyCode})</option>
             ))}
         </FormSelect>
     )

@@ -14,11 +14,10 @@ public class EntityFrameworkAccountTransactionsRepository : IAccountTransactions
     }
 
     public async Task<IEnumerable<AccountTransactionView>> GetTransactionsForAccountInDateRange(
-        Account account,
+        string accountId,
         DateTime from,
         DateTime to)
     {
-        string accountId = account.Id;
         var transactions = await _context.Splits
             .Where(x => x.AccountId == accountId)
             .Join(_context.Transactions,
@@ -28,7 +27,7 @@ public class EntityFrameworkAccountTransactionsRepository : IAccountTransactions
             .Join(_context.Accounts,
                 x => x.split.AccountId,
                 a => a.Id,
-                (x, a) => new { x.split, x.transaction, account })
+                (x, a) => new { x.split, x.transaction, account = a })
             .Where(x => x.transaction.PostDate >= from & x.transaction.PostDate <= to)
             .Select(x =>
                 new AccountTransactionViewEntity(x.account.Id, x.account.Name, x.split.QuantityNum, x.split.QuantityDenom,
@@ -40,9 +39,8 @@ public class EntityFrameworkAccountTransactionsRepository : IAccountTransactions
             .ToList();
     }
 
-    public async Task<decimal> GetSumOfTransactions(Account account, DateTime from, DateTime to)
+    public async Task<decimal> GetSumOfTransactions(string accountId, DateTime from, DateTime to)
     {
-        string accountId = account.Id;
         var transactions = await _context.Splits
             .Where(x => x.AccountId == accountId)
             .Join(_context.Transactions,
@@ -52,7 +50,7 @@ public class EntityFrameworkAccountTransactionsRepository : IAccountTransactions
             .Join(_context.Accounts,
                 x => x.split.AccountId,
                 a => a.Id,
-                (x, a) => new { x.split, x.transaction, account })
+                (x, a) => new { x.split, x.transaction })
             .Where(x => x.transaction.PostDate >= from & x.transaction.PostDate <= to)
             .Select(x => new { x.split.QuantityDenom, x.split.QuantityNum })
             .ToListAsync();

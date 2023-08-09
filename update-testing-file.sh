@@ -1,0 +1,1 @@
+cp ~/Google\ Drive/My\ Drive/gnucash/FINANCES.gnucash ./testfiles/FINANCES.gnucash

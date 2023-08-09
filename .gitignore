@@ -403,3 +403,5 @@ src/budget-fe/.yarn
 .idea
 
 bin
+
+update-testing-file.sh
