@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Account } from '../models/Account';
+import type { ExpenseAccount } from '../models/ExpenseAccount';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -12,12 +12,12 @@ export class ExpenseAccountsService {
 
     /**
      * @param bottomLevelOnly
-     * @returns Account Success
+     * @returns ExpenseAccount Success
      * @throws ApiError
      */
     public static getExpenseAccounts(
         bottomLevelOnly: boolean = false,
-    ): CancelablePromise<Array<Account>> {
+    ): CancelablePromise<Array<ExpenseAccount>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/expense-accounts',

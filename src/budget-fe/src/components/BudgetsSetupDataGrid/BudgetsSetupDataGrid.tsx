@@ -34,6 +34,10 @@ function* iterateDateRange(range: DateRange): Generator<YearMonth> {
 const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
     const yearMonthToString = (yearMonth: YearMonth) => 
         `${yearMonth.year}-${yearMonth.month.toLocaleString("cs-CZ", { minimumIntegerDigits: 2 })}`;
+
+    const expensesString = ":Expenses:";
+    const buildAccountName = (accountName: string, currencyCode: string) => 
+        `${accountName!.substring(expensesString.length)} (${currencyCode})`;
     
     const monthColumns = [...iterateDateRange(props.dateRange)]
         .map(x => {
@@ -51,9 +55,8 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
         ...monthColumns
     ];
     
-    const expensesString = "Expenses:";
     const rows: Row[] = props.accounts
-        .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { accountName: account.fullName!.substring(expensesString.length) } as Row }))
+        .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { accountName: buildAccountName(account.fullName!, account.currencyCode!) } as Row }))
         .map(x => {
             let { budgetedAccountId, row } = x;
             return [...iterateDateRange(props.dateRange)].reduce((r, m) => {

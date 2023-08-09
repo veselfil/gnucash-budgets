@@ -7,5 +7,6 @@ export type BudgetedAccountResponse = {
     budgetedAccountId?: number;
     accountId?: string;
     fullName?: string;
+    currencyCode?: string;
 };
 

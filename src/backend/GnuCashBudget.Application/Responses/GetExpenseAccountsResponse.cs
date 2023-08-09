@@ -4,6 +4,6 @@ namespace GnuCashBudget.Application.Responses;
 
 public class GetExpenseAccountsResponse
 {
-    public IEnumerable<Account> Accounts { get; set; }
+    public IEnumerable<ExpenseAccount> Accounts { get; set; }
 }
 

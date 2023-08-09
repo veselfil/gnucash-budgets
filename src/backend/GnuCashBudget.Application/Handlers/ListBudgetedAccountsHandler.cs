@@ -4,7 +4,6 @@ using GnuCashBudget.Application.Responses;
 using GnuCashBudget.Data.Abstractions.Repositories;
 using GnuCashBudget.Data.EntityFramework.Models;
 using GnuCashBudget.GnuCashData.Abstractions;
-using GnuCashBudget.GnuCashData.Abstractions.Models;
 using MediatR;
 
 namespace GnuCashBudget.Application.Handlers;
@@ -12,9 +11,9 @@ namespace GnuCashBudget.Application.Handlers;
 public class ListBudgetedAccountsHandler: IRequestHandler<ListBudgetedAccountsRequest, ListBudgetedAccountsResponse>
 {
     private readonly IBudgetedAccountRepository _budgetedAccountsRepository;
-    private readonly IAccountRepository _accountRepository;
+    private readonly IExpenseAccountsRepository _accountRepository;
 
-    public ListBudgetedAccountsHandler(IBudgetedAccountRepository budgetedAccountsRepository, IAccountRepository accountRepository)
+    public ListBudgetedAccountsHandler(IBudgetedAccountRepository budgetedAccountsRepository, IExpenseAccountsRepository accountRepository)
     {
         _budgetedAccountsRepository = budgetedAccountsRepository;
         _accountRepository = accountRepository;
@@ -24,7 +23,7 @@ public class ListBudgetedAccountsHandler: IRequestHandler<ListBudgetedAccountsRe
     {
         var budgetedAccounts = await _budgetedAccountsRepository.GetAll();
         var budgetedAccountIds = budgetedAccounts.ToImmutableDictionary(x => x.AccountGuid, x => x);
-        var allAccounts = await _accountRepository.GetAccountsByType(AccountType.Expense);
+        var allAccounts = await _accountRepository.GetAllExpenseAccounts();
 
         BudgetedAccount? GetBudgetedAccount(string accountGuid)
         {
@@ -39,7 +38,8 @@ public class ListBudgetedAccountsHandler: IRequestHandler<ListBudgetedAccountsRe
             Accounts = allAccounts
                 .Select(x => new { Account = x, BudgetedAccount = GetBudgetedAccount(x.Id) })
                 .Where(x => x.BudgetedAccount != null)
-                .Select(x => new BudgetedAccountResponse(x.BudgetedAccount.Id, x.Account.Id, x.Account.FullName))
+                .Select(x => new BudgetedAccountResponse(
+                    x.BudgetedAccount.Id, x.Account.Id, x.Account.FullName, x.Account.CurrencyCode))
         };
     }
 }

@@ -18,7 +18,7 @@ const AccountPicker: React.FC<AccountPickerProps> = (props: AccountPickerProps) 
         <FormSelect aria-label="Default select example" onChange={onChange}>
             <option value="">Select account</option>
             {props.accounts.map(x => (
-                <option value={x.id!} key={x.id!}>{x.fullName}</option>
+                <option value={x.id!} key={x.id!}>{x.fullName} ({x.commodity})</option>
             ))}
         </FormSelect>
     )

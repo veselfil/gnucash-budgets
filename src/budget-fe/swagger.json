@@ -290,7 +290,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Account"
+                    "$ref": "#/components/schemas/ExpenseAccount"
                   }
                 }
               },
@@ -298,7 +298,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Account"
+                    "$ref": "#/components/schemas/ExpenseAccount"
                   }
                 }
               },
@@ -306,7 +306,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Account"
+                    "$ref": "#/components/schemas/ExpenseAccount"
                   }
                 }
               }
@@ -443,6 +443,39 @@
             "type": "string"
           },
           "fullName": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExpenseAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "commodity": {
+            "type": "string"
+          },
+          "accountType": {
+            "$ref": "#/components/schemas/AccountType"
+          },
+          "childAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseAccount"
+            }
+          },
+          "currencyCode": {
             "type": "string"
           }
         },

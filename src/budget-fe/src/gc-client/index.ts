@@ -14,6 +14,7 @@ export type { AddBudgetedAccountRequest } from './models/AddBudgetedAccountReque
 export type { BalanceResponse } from './models/BalanceResponse';
 export type { BudgetedAccountResponse } from './models/BudgetedAccountResponse';
 export type { BudgetResponse } from './models/BudgetResponse';
+export type { ExpenseAccount } from './models/ExpenseAccount';
 export type { GetBalancesResponse } from './models/GetBalancesResponse';
 export type { GetBudgetsInRangeResponse } from './models/GetBudgetsInRangeResponse';
 export type { GetTransactionsForAccountInDateRangeResponse } from './models/GetTransactionsForAccountInDateRangeResponse';

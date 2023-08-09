@@ -41,8 +41,7 @@ builder.Services.AddDbContext<BudgetsContext>((provider, builder) =>
     builder.EnableSensitiveDataLogging();
 });
 
-builder.Services.AddScoped<IAccountRepository, EntityFrameworkAccountsRepository>();
-builder.Services.AddScoped<IAccountTransactionsRepository, EntityFrameworkAccountTransactionsRepository>();
+builder.Services.AddGnuCashEntityFrameworkDal();
 builder.Services.AddScoped<IBudgetedAccountRepository, EntityFrameworkBudgetedAccountsRepository>();
 builder.Services.AddScoped<IBudgetsRepository, EntityFrameworkBudgetsRepository>();
 
