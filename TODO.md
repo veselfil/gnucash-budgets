@@ -2,4 +2,4 @@
 - [x] Remove budgets
 - [x] Handle currencies for balance
 - [x] Redirect to balance by default
-- [ ] Initial balance?
+- [ ] Fix horrible workaround for removing 'Expenses:' prefix

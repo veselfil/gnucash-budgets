@@ -1,9 +1,12 @@
+import 'react-data-grid/lib/styles.css';
+
 import React from 'react';
-import DataGrid, {Column, RowsChangeData, TextEditor} from 'react-data-grid';
+import DataGrid, {Column, RowsChangeData, textEditor} from 'react-data-grid';
 import {Account, BudgetedAccountResponse} from "../../gc-client";
 import {DateRange} from "../../models/DateRange";
 import moment from "moment";
 import {budgetKeyToString, BudgetsMap} from "../../models/BudgetsMap";
+import {formatCurrency} from "../../helpers/dateFormatting";
 
 interface BudgetsSetupDataGridProps {
     accounts: BudgetedAccountResponse[]
@@ -46,20 +49,24 @@ const BudgetsSetupDataGrid: React.FC<BudgetsSetupDataGridProps> = props => {
             return { 
                 key: yearMonth,
                 name: yearMonth,
-                editor: TextEditor,
-                resizable: true
+                editor: textEditor,
+                resizable: true,
             } as Column<Row>
         });
 
     const columns: Column<Row>[] = [
-        { key: "accountName", name: "Account", editable: true, width: 200, resizable: true, },
+        { key: "accountName", name: "Account", width: 200, resizable: true, },
         ...monthColumns
     ];
     
     const rows: Row[] = props.accounts
-        .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { accountGuid: account.accountId, accountName: buildAccountName(account.fullName!, account.currencyCode!) } as Row }))
-        .map(x => {
-            let { budgetedAccountId, row } = x;
+        .map(account => ({ budgetedAccountId: account.budgetedAccountId, row: { 
+            accountGuid: account.accountId, 
+            accountName: buildAccountName(account.fullName!, account.currencyCode!),
+            currency: account.currencyCode!    
+        } as Row })).map(x => {
+            const { budgetedAccountId, row } = x;
+            const currency = props.accounts.filter(x => x.budgetedAccountId == budgetedAccountId)[0].currencyCode;
             return [...iterateDateRange(props.dateRange)].reduce((r, m) => {
                 const key = budgetKeyToString({ dateString: yearMonthToString(m), budgetedAccountId: budgetedAccountId!})
                 return {
