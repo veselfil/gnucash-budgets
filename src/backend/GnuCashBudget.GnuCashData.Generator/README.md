@@ -1,0 +1,3 @@
+As an architecture of "workers" I used [this microsoft guide](https://learn.microsoft.com/en-us/dotnet/core/extensions/scoped-service)
+
+I needed to use `Scoped` services with `BackgroundService` because ...

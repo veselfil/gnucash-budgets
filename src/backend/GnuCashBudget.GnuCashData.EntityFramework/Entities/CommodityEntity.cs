@@ -16,6 +16,7 @@ namespace GnuCashBudget.GnuCashData.EntityFramework.Entities;
 );*/
 
 
+[Table("commodities")]
 public class CommodityEntity
 {
     [Column("guid")]

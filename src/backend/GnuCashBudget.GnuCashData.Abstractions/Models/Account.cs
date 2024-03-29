@@ -8,9 +8,11 @@ public record Account(
     string FullName,
     string Commodity,
     AccountType AccountType,
-    ImmutableList<Account> ChildAccounts);
+    ImmutableList<Account> ChildAccounts,
+    string? ParentId);
     
-public record ExpenseAccount(string Id,
+public record ExpenseAccount(
+    string Id,
     string Name,
     string FullName,
     string Commodity,
