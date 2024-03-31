@@ -1,23 +1,30 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GnuCashBudget.SharedDomain;
 using GnuCashBudget.Api.Configuration;
-using GnuCashBudget.Application;
-using GnuCashBudget.Data.Abstractions.Repositories;
-using GnuCashBudget.Data.EntityFramework;
-using GnuCashBudget.Data.EntityFramework.Repositories;
-using GnuCashBudget.GnuCashData.Abstractions;
+using GnuCashBudget.Feature.BudgetedAccounts.Budgeting.Requests;
 using GnuCashBudget.GnuCashData.EntityFramework;
-using GnuCashBudget.GnuCashData.EntityFramework.Repositories;
+using GnuCashBudget.SharedDomain.Data;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-});
+var controllersAssembly = typeof(ListAccounts).Assembly;
+var controllersApplicationPart = new AssemblyPart(controllersAssembly);
+
+builder.Services
+    .AddControllers()
+    .ConfigureApplicationPartManager(manager =>
+    {
+        manager.ApplicationParts.Add(controllersApplicationPart);
+    })
+    .AddControllersAsServices()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -40,15 +47,16 @@ builder.Services.AddDbContext<BudgetsContext>((provider, builder) =>
     builder.UseSqlite($"Data Source={sourceOptions.Value.BudgetsFile}");
     builder.EnableSensitiveDataLogging();
 });
-
-builder.Services.AddGnuCashEntityFrameworkDal();
-builder.Services.AddScoped<IBudgetedAccountRepository, EntityFrameworkBudgetedAccountsRepository>();
-builder.Services.AddScoped<IBudgetsRepository, EntityFrameworkBudgetsRepository>();
+//
+// builder.Services.AddScoped<IBudgetedAccountRepository, EntityFrameworkBudgetedAccountsRepository>();
+// builder.Services.AddScoped<IBudgetsRepository, EntityFrameworkBudgetsRepository>();
 
 builder.Services.AddMediatR(config =>
 {
-    config.RegisterServicesFromAssemblyContaining<HandlersMarkerType>();
+    config.RegisterServicesFromAssemblyContaining<ListAccounts.Handler>();
 });
+
+builder.Services.AddSharedDomainServices();
 
 var app = builder.Build();
 
