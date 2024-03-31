@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using GnuCashBudget.GnuCashData.Abstractions;
 using GnuCashBudget.GnuCashData.Abstractions.Models;
 using GnuCashBudget.GnuCashData.EntityFramework.Entities;
+using GnuCashBudget.GnuCashData.EntityFramework.Helpers;
 using Abstract = GnuCashBudget.GnuCashData.Abstractions.Models;
 using AccountType = GnuCashBudget.GnuCashData.EntityFramework.Entities.AccountType;
 
@@ -57,20 +58,7 @@ public class EntityFrameworkAccountsRepository(GnuCashContext dataContext)
     /// <returns></returns>
     public async Task<Account> CreateAccount(Abstract.AccountType type, string parentId, string commodityId, int commodityFraction)
     {
-        var accountEntity = new AccountEntity()
-        {
-            Id = Guid.NewGuid().ToString(),
-            Name = $"{type.ToString()} - generated",
-            Type = (AccountType)type,
-            CommodityId = commodityId,
-            CommodityScu = commodityFraction,
-            NonStdScu = 0, // TODO Check this out if I can put 0 here for each case
-            ParentId = parentId,
-            Code = string.Empty,
-            Description = "Generated account",
-            Hidden = false,
-            Placeholder = false,
-        };
+        var accountEntity = MapAccountEntity(type, parentId, commodityId, commodityFraction);
         
         await Context.Accounts.AddAsync(accountEntity);
         await Context.SaveChangesAsync();
@@ -88,7 +76,7 @@ public class EntityFrameworkAccountsRepository(GnuCashContext dataContext)
         };
     }
     
-    (Account,Commodity) WrapperToTuple(AccountWithCommodity wrapper)
+    private (Account,Commodity) WrapperToTuple(AccountWithCommodity wrapper)
     {
         var account = wrapper.Account with
         {
@@ -100,5 +88,23 @@ public class EntityFrameworkAccountsRepository(GnuCashContext dataContext)
         var commodity = wrapper.Commodity;
         
         return (account, commodity);
+    }
+
+    private AccountEntity MapAccountEntity(Abstract.AccountType type, string parentId, string commodityId, int commodityFraction)
+    {
+        return new AccountEntity
+        {
+            Id = SimpleHelper.GenerateGuid(),
+            Name = $"{type.ToString()}",
+            Type = (AccountType)type,
+            CommodityId = commodityId,
+            CommodityScu = commodityFraction,
+            NonStdScu = 0, // TODO Check this out if I can put 0 here for each case
+            ParentId = parentId,
+            Code = string.Empty,
+            Description = $"Generated {type.ToString().ToLower()} account",
+            Hidden = false,
+            Placeholder = false,
+        };
     }
 }

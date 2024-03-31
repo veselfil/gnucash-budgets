@@ -5,12 +5,9 @@ using GnuCashBudget.GnuCashData.Abstractions.Models;
 
 namespace GnuCashBudget.GnuCashData.EntityFramework.Repositories;
 
-public class EntityFrameworkExpenseAccountsRepository: EntityFrameworkAccountTreeBaseRepository, IExpenseAccountsRepository
+public class EntityFrameworkExpenseAccountsRepository(GnuCashContext context)
+    : EntityFrameworkAccountTreeBaseRepository(context), IExpenseAccountsRepository
 {
-    public EntityFrameworkExpenseAccountsRepository(GnuCashContext context) : base(context)
-    {
-    }
-
     public async Task<ExpenseAccount> Find(string accountGuid)
     {
         var accountsList = FlattenAccountTree(await GetFullAccountTree());

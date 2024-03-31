@@ -1,30 +1,25 @@
 using GnuCashBudget.GnuCashData.Abstractions;
 using GnuCashBudget.GnuCashData.Abstractions.Models;
+using GnuCashBudget.GnuCashData.EntityFramework.Entities;
+using GnuCashBudget.GnuCashData.EntityFramework.Helpers;
 using Microsoft.EntityFrameworkCore;
 
-namespace GnuCashBudget.GnuCashData.EntityFramework;
+namespace GnuCashBudget.GnuCashData.EntityFramework.Repositories;
 
-public class EntityFrameworkAccountTransactionsRepository : IAccountTransactionsRepository
+public class EntityFrameworkAccountTransactionsRepository(GnuCashContext context) : IAccountTransactionsRepository
 {
-    private readonly GnuCashContext _context;
-
-    public EntityFrameworkAccountTransactionsRepository(GnuCashContext context)
-    {
-        _context = context;
-    }
-
     public async Task<IEnumerable<AccountTransactionView>> GetTransactionsForAccountInDateRange(
         string accountId,
         DateTime from,
         DateTime to)
     {
-        var transactions = await _context.Splits
+        var transactions = await context.Splits
             .Where(x => x.AccountId == accountId)
-            .Join(_context.Transactions,
+            .Join(context.Transactions,
                 split => split.TxId,
                 transaction => transaction.Id,
                 (split, transaction) => new { split, transaction })
-            .Join(_context.Accounts,
+            .Join(context.Accounts,
                 x => x.split.AccountId,
                 a => a.Id,
                 (x, a) => new { x.split, x.transaction, account = a })
@@ -41,13 +36,13 @@ public class EntityFrameworkAccountTransactionsRepository : IAccountTransactions
 
     public async Task<decimal> GetSumOfTransactions(string accountId, DateTime from, DateTime to)
     {
-        var transactions = await _context.Splits
+        var transactions = await context.Splits
             .Where(x => x.AccountId == accountId)
-            .Join(_context.Transactions,
+            .Join(context.Transactions,
                 split => split.TxId,
                 transaction => transaction.Id,
                 (split, transaction) => new { split, transaction })
-            .Join(_context.Accounts,
+            .Join(context.Accounts,
                 x => x.split.AccountId,
                 a => a.Id,
                 (x, a) => new { x.split, x.transaction })
@@ -59,10 +54,58 @@ public class EntityFrameworkAccountTransactionsRepository : IAccountTransactions
 
     }
 
+    public async Task WriteTransactionAsync(
+        Account accountFrom, Account accountTo,
+        Commodity commodity, Transaction transaction)
+    {
+        var transactionEntity = MapTransactionEntity(commodity, transaction);
+
+        var splitEntityFrom = MapSplitEntity(transactionEntity.Id, accountFrom, transaction, SplitType.Debit);
+        var splitEntityTo = MapSplitEntity(transactionEntity.Id, accountTo, transaction, SplitType.Credit);
+        
+        await context.Transactions.AddAsync(transactionEntity);
+        await context.Splits.AddAsync(splitEntityFrom);
+        await context.Splits.AddAsync(splitEntityTo);
+
+        await context.SaveChangesAsync();
+    }
+
     private record AccountTransactionViewEntity(string AccountId, string AccountName, int ValueNum, int ValueDenom,
         DateTime PostDate)
     {
         public AccountTransactionView ToDomainView() =>
             new AccountTransactionView(AccountId, AccountName, (decimal)ValueNum / ValueDenom, PostDate);
+    }
+
+    private TransactionEntity MapTransactionEntity(Commodity commodity, Transaction transaction)
+    {
+        return new TransactionEntity
+        {
+            Id = SimpleHelper.GenerateGuid(),
+            CurrencyId = commodity.Id,
+            Description = transaction.Description,
+            EntryDate = transaction.EntryDate,
+            Num = string.Empty,
+            PostDate = transaction.PostDate,
+        };
+    }
+
+    private SplitEntity MapSplitEntity(string transactionId, Account account, Transaction transaction, SplitType splitType)
+    {
+        return new SplitEntity
+        {
+            Id = SimpleHelper.GenerateGuid(),
+            TxId = transactionId,
+            AccountId = account.Id,
+            Memo = string.Empty,
+            Action = string.Empty,
+            ReconcileState = false,
+            ReconcileDate = DateTime.UnixEpoch.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"),
+            ValueNum = (int)transaction.ValueNum * splitType.ConvertTypeToInt(),
+            ValueDenom = (int)transaction.ValueDenom,
+            QuantityNum = (int)transaction.QuantityNum * splitType.ConvertTypeToInt(),
+            QuantityDenom = (int)transaction.QuantityDenom,
+            LotId = null,
+        };
     }
 }

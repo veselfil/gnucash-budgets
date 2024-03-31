@@ -4,5 +4,5 @@ public record Commodity(
     string Id,
     string Namespace,
     string Mnemonic,
-    int? Fraction);
+    int Fraction);
     

@@ -24,7 +24,7 @@ builder.Services.AddDbContext<GnuCashContext>((provider, innerBuilder) =>
 });
 
 builder.Services.AddHostedService<ScopedBackgroundService>();
-builder.Services.AddScoped<IScopedProcessingService, DefaultScopedProcessingService>();
+builder.Services.AddScoped<IScopedProcessingService, WorkerService>();
 builder.Services.AddScoped<IGeneratorService, GeneratorService>();
 
 builder.Services.AddGnuCashEntityFrameworkDal();
