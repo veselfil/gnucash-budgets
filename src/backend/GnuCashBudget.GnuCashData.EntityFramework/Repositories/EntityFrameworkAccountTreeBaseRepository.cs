@@ -22,12 +22,12 @@ public abstract class EntityFrameworkAccountTreeBaseRepository(GnuCashContext co
         return accounts.ToImmutableList();
     }
 
-    protected async Task<ImmutableList<AccountWithCommodity>> GetFullAccountTree(bool includeRootAccount = false)
+    protected async Task<ImmutableList<AccountWithCommodity>> GetFullAccountTree(bool includeRootAccount = false, CancellationToken cancellationToken = default)
     {
         var accounts = await Context.Accounts
             .Join(Context.Commodities, account => account.CommodityId, commodity => commodity.Id,
                 (account, commodity) => new { Account = account, Commodity = commodity })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         
         var rootAccount = accounts.Single(x => x is { Account.Type: AccountType.Root, Account.Name: "Root Account" });
         var rootAccountWrapper = new AccountWithCommodity

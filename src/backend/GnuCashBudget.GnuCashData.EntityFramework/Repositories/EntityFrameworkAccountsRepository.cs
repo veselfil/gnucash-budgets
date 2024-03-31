@@ -38,9 +38,9 @@ public class EntityFrameworkAccountsRepository(GnuCashContext dataContext)
             .ToImmutableList();
     }
 
-    public async Task<(Account?,Commodity?)> GetParentAccountByType(Abstract.AccountType type, bool includeRootAccount)
+    public async Task<(Account?,Commodity?)> GetParentAccountByType(Abstract.AccountType type, bool includeRootAccount, CancellationToken cancellationToken)
     {
-        var accountTree = await GetFullAccountTree(includeRootAccount);
+        var accountTree = await GetFullAccountTree(includeRootAccount, cancellationToken);
         
         return accountTree
             .Where(x => x.Account.AccountType == type)
@@ -55,13 +55,14 @@ public class EntityFrameworkAccountsRepository(GnuCashContext dataContext)
     /// <param name="parentId">ID of a parent account. Since we are not creating a ROOT account with this method it can never be NULL</param>
     /// <param name="commodityId">ID of a commodity, got from commodities table</param>
     /// <param name="commodityFraction">Commodity fractions, most commodities (CZK, USD, EUR) have 100 franctions. Only stocks/etfs have 1</param>
+    /// <param name="cancellationToken">CancellationToken</param>
     /// <returns></returns>
-    public async Task<Account> CreateAccount(Abstract.AccountType type, string parentId, string commodityId, int commodityFraction)
+    public async Task<Account> CreateAccount(Abstract.AccountType type, string parentId, string commodityId, int commodityFraction, CancellationToken cancellationToken)
     {
         var accountEntity = MapAccountEntity(type, parentId, commodityId, commodityFraction);
         
-        await Context.Accounts.AddAsync(accountEntity);
-        await Context.SaveChangesAsync();
+        await Context.Accounts.AddAsync(accountEntity, cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
 
         return MapAccount(accountEntity);
     }

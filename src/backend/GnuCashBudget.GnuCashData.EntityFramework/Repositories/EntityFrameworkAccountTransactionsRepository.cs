@@ -56,18 +56,19 @@ public class EntityFrameworkAccountTransactionsRepository(GnuCashContext context
 
     public async Task WriteTransactionAsync(
         Account accountFrom, Account accountTo,
-        Commodity commodity, Transaction transaction)
+        Commodity commodity, Transaction transaction,
+        CancellationToken cancellationToken)
     {
         var transactionEntity = MapTransactionEntity(commodity, transaction);
 
         var splitEntityFrom = MapSplitEntity(transactionEntity.Id, accountFrom, transaction, SplitType.Debit);
         var splitEntityTo = MapSplitEntity(transactionEntity.Id, accountTo, transaction, SplitType.Credit);
         
-        await context.Transactions.AddAsync(transactionEntity);
-        await context.Splits.AddAsync(splitEntityFrom);
-        await context.Splits.AddAsync(splitEntityTo);
+        await context.Transactions.AddAsync(transactionEntity, cancellationToken);
+        await context.Splits.AddAsync(splitEntityFrom, cancellationToken);
+        await context.Splits.AddAsync(splitEntityTo, cancellationToken);
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     private record AccountTransactionViewEntity(string AccountId, string AccountName, int ValueNum, int ValueDenom,
