@@ -5,29 +5,37 @@ using GnuCashBudget.GnuCashData.Generator.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-var builder = Host.CreateApplicationBuilder(args);
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: false)
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", true, true)
+    .Build();
 
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true);
+var serviceCollection = new ServiceCollection();
 
-builder.Services.AddOptions<GeneratorOptions>().BindConfiguration(GeneratorOptions.Generator);
-
-builder.Services.AddDbContext<GnuCashContext>((provider, innerBuilder) =>
+serviceCollection.AddOptions<GeneratorOptions>().Bind(configuration.GetSection(GeneratorOptions.Generator));
+serviceCollection.AddDbContext<GnuCashContext>((provider, innerBuilder) =>
 {
     var generatorOptions = provider.GetRequiredService<IOptions<GeneratorOptions>>();
     innerBuilder.UseSqlite($"Data Source={generatorOptions.Value.DatabaseFile}");
     innerBuilder.EnableSensitiveDataLogging();
 });
 
-builder.Services.AddHostedService<ScopedBackgroundService>();
-builder.Services.AddScoped<IScopedProcessingService, WorkerService>();
-builder.Services.AddScoped<IGeneratorService, GeneratorService>();
+serviceCollection.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+});
 
-builder.Services.AddGnuCashEntityFrameworkDal();
+serviceCollection.AddScoped<IConsoleAppService, ConsoleAppService>();
+serviceCollection.AddScoped<IGeneratorService, GeneratorService>();
+serviceCollection.AddGnuCashEntityFrameworkDal();
 
-var host = builder.Build();
-await host.RunAsync();
+var serviceProvider = serviceCollection.BuildServiceProvider();
+
+using var scope = serviceProvider.CreateScope();
+var workerService = scope.ServiceProvider.GetRequiredService<IConsoleAppService>();
+
+await workerService.DoWorkAsync(CancellationToken.None);

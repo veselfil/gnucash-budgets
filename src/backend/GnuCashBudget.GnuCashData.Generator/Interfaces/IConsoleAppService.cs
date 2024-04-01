@@ -1,6 +1,6 @@
 namespace GnuCashBudget.GnuCashData.Generator.Interfaces;
 
-public interface IScopedProcessingService
+public interface IConsoleAppService
 {
     Task DoWorkAsync(CancellationToken cancellationToken);
 }

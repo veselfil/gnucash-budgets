@@ -10,11 +10,11 @@ using Microsoft.Extensions.Options;
 
 namespace GnuCashBudget.GnuCashData.Generator.Services;
 
-public sealed class WorkerService(
-    ILogger<WorkerService> logger,
+public sealed class ConsoleAppService(
+    ILogger<ConsoleAppService> logger,
     IOptions<GeneratorOptions> generatorOptions,
     IGeneratorService generatorService,
-    IAccountRepository accountRepository) : IScopedProcessingService
+    IAccountRepository accountRepository) : IConsoleAppService
 {
     private readonly GeneratorOptions _generatorOptions = generatorOptions.Value;
     private static readonly Random Random = new();
@@ -58,7 +58,7 @@ public sealed class WorkerService(
             throw new CommodityNotFoundException(rootAccount.Id);
         }
 
-        Console.WriteLine($"Root account was found, name: {rootAccount.Name}, id: {rootAccount.Id}");
+        logger.LogInformation("Root account was found, name: {RootAccountName}, id: {RootAccountId}", rootAccount.Name, rootAccount.Id);
 
         return (rootAccount, rootCommodity);
     }
