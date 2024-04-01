@@ -15,9 +15,9 @@ public class GeneratorService(
     private static readonly Random Random = new();
 
     public async Task<Account> GetOrCreateAccountAsync(AccountType accountType, string? parentId, string? commodityId,
-        int commodityFraction, CancellationToken cancellationToken)
+        int commodityFraction)
     {
-        var (account, _) = await accountRepository.GetParentAccountByType(accountType, parentId is null, cancellationToken);
+        var (account, _) = await accountRepository.GetParentAccountByType(accountType, parentId is null);
         if (account is not null)
         {
             return account;
@@ -28,30 +28,32 @@ public class GeneratorService(
             throw new AccountCreationException($"Cannot create an account! Either ParentId({parentId}) or CommodityId({commodityId}) are NULL");
         }
 
-        return await accountRepository.CreateAccount(accountType, parentId, commodityId, commodityFraction, cancellationToken);
+        return await accountRepository.CreateAccount(accountType, parentId, commodityId, commodityFraction);
     }
 
     public Task<ImmutableList<Account>> CreateChildAccounts(int accountsCount, AccountType accountType, string parentId,
-        string commodityId, int commodityFraction, CancellationToken cancellationToken)
+        string commodityId, int commodityFraction)
     {
         return Task.FromResult(
             Enumerable.Range(1, accountsCount)
                 .Select(async x =>
-                    await accountRepository.CreateAccount(accountType, parentId, commodityId, commodityFraction, cancellationToken))
+                    await accountRepository.CreateAccount(accountType, parentId, commodityId, commodityFraction))
                 .Select(t => t.Result)
                 .ToImmutableList()
         );
     }
 
-    public async Task CreateTransaction(Account accountFrom, Account accountTo, Commodity commodity, int amount, string description, CancellationToken cancellationToken)
+    public async Task CreateTransaction(Account accountFrom, Account accountTo, Commodity commodity, int amount, string description)
     {
+        // var description = typeof(ExpensesDescriptionType).PickAtRandom<ExpensesDescriptionType>().DisplayName(); // TODO this could be done better
+
         var transaction = MapTransaction(
             description,
             (uint)amount,
             (uint)commodity.Fraction
         );
 
-        await transactionsRepository.WriteTransactionAsync(accountFrom, accountTo, commodity, transaction, cancellationToken);
+        await transactionsRepository.WriteTransactionAsync(accountFrom, accountTo, commodity, transaction);
     }
 
     private Transaction MapTransaction(string description, uint amount, uint fraction)

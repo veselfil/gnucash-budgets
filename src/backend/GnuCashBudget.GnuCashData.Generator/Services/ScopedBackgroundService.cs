@@ -18,7 +18,7 @@ public sealed class ScopedBackgroundService(
         await DoWorkAsync(cancellationToken);
     }
 
-    private async Task DoWorkAsync(CancellationToken cancellationToken)
+    private async Task DoWorkAsync(CancellationToken cancellationToken) // TODO Check if this is correct. When I run the application and the worker finishes it does not end automatically
     {
         logger.LogInformation("{Name} is working", ClassName);
 
