@@ -69,17 +69,17 @@ If provided, only transactions in the specified currency will be included in the
 * The response contains an array of expense objects, each representing a single transaction. 
 * Each expense object includes fields like `transaction ID`, `amount`, `currency` and `timestamp`.
 
-| Name             | Nullable | Description                                                                                                 |
-|------------------|----------|-------------------------------------------------------------------------------------------------------------|
-| `transaction_id` | No       | Unique identifier of the transaction, used to identify a specific expense                                   |
-| `amount`         | No       | The amount of the transaction spent                                                                         |
-| `currency`       | No       | The currency in which the transaction was made (e.g., USD, EUR)                                             |
-| `category`       | Yes      | The category to which the expense belongs (e.g., groceries, housing, transportation)                        |
-| `description`    | Yes      | A description of the transaction, providing additional information about what the transaction was made for  |
-| `timestamp`      | No       | The timestamp of the transaction, indicating the date and time when the transaction occurred                |
-| `merchant`       | Yes      | The name or identifier of the merchant where the transaction was made                                       |
-| `payment_method` | Yes      | The payment method used for the transaction (e.g., debit card, credit card, bank transfer)                  |
-| `location`       | Yes      | The location where the transaction was made (e.g., merchant's address or GPS coordinates)                   |
+| Name             | Nullable | Data Type                | Description                                                                                                |
+|------------------|----------|--------------------------|------------------------------------------------------------------------------------------------------------|
+| `transaction_id` | No       | String                   | Unique identifier of the transaction, used to identify a specific expense                                  |
+| `amount`         | No       | Decimal                  | The amount of the transaction spent                                                                        |
+| `currency`       | No       | String                   | The currency in which the transaction was made (e.g., USD, EUR)                                            |
+| `category`       | Yes      | String                   | The category to which the expense belongs (e.g., groceries, housing, transportation)                       |
+| `description`    | Yes      | String                   | A description of the transaction, providing additional information about what the transaction was made for |
+| `timestamp`      | No       | String (ISO 8601 format) | The timestamp of the transaction, indicating the date and time when the transaction occurred               |
+| `merchant`       | Yes      | String                   | The name or identifier of the merchant where the transaction was made                                      |
+| `payment_method` | Yes      | String                   | The payment method used for the transaction (e.g., debit card, credit card, bank transfer)                 |
+| `location`       | Yes      | String                   | The location where the transaction was made (e.g., merchant's address or GPS coordinates)                  |
 
 ```json
 {
