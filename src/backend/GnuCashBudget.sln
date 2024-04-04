@@ -12,6 +12,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Data.Abstract
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Data.EntityFramework", "GnuCashBudget.Data.EntityFramework\GnuCashBudget.Data.EntityFramework.csproj", "{3626B84C-659A-4CE4-818E-C8CBA5DFEB7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Adapter.Abstractions", "GnuCashBudget.Adapter.Abstractions\GnuCashBudget.Adapter.Abstractions.csproj", "{5B0D52A0-632F-41CF-B051-F05780254D87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Adapter.Example", "GnuCashBudget.Adapter.Example\GnuCashBudget.Adapter.Example.csproj", "{B5625816-2384-4DE0-A925-E06175C2A8AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +46,13 @@ Global
 		{3626B84C-659A-4CE4-818E-C8CBA5DFEB7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3626B84C-659A-4CE4-818E-C8CBA5DFEB7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3626B84C-659A-4CE4-818E-C8CBA5DFEB7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B0D52A0-632F-41CF-B051-F05780254D87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B0D52A0-632F-41CF-B051-F05780254D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B0D52A0-632F-41CF-B051-F05780254D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B0D52A0-632F-41CF-B051-F05780254D87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5625816-2384-4DE0-A925-E06175C2A8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5625816-2384-4DE0-A925-E06175C2A8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5625816-2384-4DE0-A925-E06175C2A8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5625816-2384-4DE0-A925-E06175C2A8AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
