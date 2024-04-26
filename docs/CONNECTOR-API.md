@@ -10,6 +10,7 @@
       * [Benefits](#benefits-1)
       * [Cons](#cons-1)
     * [Summary](#summary)
+      * [How to overcome a problem with accessing the app from a mobile device](#how-to-overcome-a-problem-with-accessing-the-app-from-a-mobile-device)
   * [REST vs push/pull model](#rest-vs-pushpull-model)
     * [1. REST api](#1-rest-api)
       * [This approach would mean](#this-approach-would-mean-2)
@@ -25,9 +26,14 @@
   * [Adapters](#adapters)
   * [Specification](#specification)
     * [Authentication and Authorization:](#authentication-and-authorization)
-    * [Messages and their Descriptions:](#messages-and-their-descriptions)
-      * [Expense message](#expense-message)
-        * [Message content](#message-content)
+    * [Data Format:](#data-format)
+    * [Error Handling:](#error-handling)
+    * [Endpoints and their Descriptions:](#endpoints-and-their-descriptions)
+      * [/expenses/history](#expenseshistory)
+        * [Request Parameters:](#request-parameters)
+        * [API Responses:](#api-responses)
+          * [Successful response (Status code 200):](#successful-response-status-code-200)
+        * [Error responses (Status code 4xx and 5xx):](#error-responses-status-code-4xx-and-5xx)
     * [Inputs](#inputs)
     * [Outputs](#outputs)
 <!-- TOC -->
@@ -52,9 +58,10 @@ We have two sensible ways how to look at our system - it will run on [Cloud](#1-
 #### This approach would mean
 
 * Having User Management (log in, etc.)
+  * Or using Google OAuth Login **only** and not have own user management
 * Connecting Google Drive in which the GNUCash.sqlite file is saved
   * This would further mean have some checks in place to know if the file was edited (user can download a file, do some changes to Assets and upload it back)
-  * Implementing Google Auth
+  * Implementing Google OAuth
 * When an adapter would need permissions to read mail (bank doesn't have an API &rarr; we parse it from the mail) we need to ask user for that and store it somewhere
 
 #### Benefits
@@ -97,6 +104,21 @@ access the app from mobiles. This will be painful if let's say user is in shop, 
 In localhost approach user has his file on disk whole time (with Google Drive plugin it automatically synchronizes to users cloud)
 and after initial set up its easy for him to use the app
 
+#### How to overcome a problem with accessing the app from a mobile device
+
+We can create an adapter just for categorizing expenses from mobile device. This adapter would be connected to a mail address.
+When user starts the app on localhost this adapter will read the mails and present them to a user as expenses. These expenses
+will be already categorized by the user (all needed data are there) and he will only "click" OK button and expenses will
+be written to the database as categorized
+
+We would need to provide some webpage with a form which a user would fill. Then it would send a mail to specific email
+address which is connected to the adapter. It doesn't matter if we create our own webpage and deploy it, or we use 
+Google Forms for instance
+
+Basically approach would be: have Google Form (webpage) &rarr; user fills a form as an expense &rarr; mail is sent to 
+an email address &rarr; user starts up the app on localhost &rarr; adapter reads mails as expenses and presents them to
+the user &rarr; user clicks OK and expenses are categorized
+
 ## REST vs push/pull model
 
 We also need to look at a way how will adapters communicate with main app
@@ -109,31 +131,26 @@ We have two sensible ways how to do it - via [REST](#1-rest-api) or [PUSH/PULL m
 
 #### This approach would mean
 
-* More development on the main app part
-  * All transactions are acquired from adapter service &rarr; main app adds them to some internal "queue" (database table probably) &rarr; show them to the user
-  * It needs to write to the database which expenses are categorized
-* Implementing caching (to database) in adapter services
-  * To not parse all mails with every call
-  * To not call Bank API to get all expenses every time
+* Main app development logic
+  * All transactions which are acquired from adapter service will be put in some database table with un-categorized expense state
+  and when user wants to see un-categorized expenses just show him expenses with corresponding state
+  * When user categorizes an expense it is moved from un-categorized state to categorized one
+  * Main application only gets new data (from adapters) based on continuation-token logic (older and un-categorized data 
+  are already in the database table from earlier)
+* Implementing continuation-token in adapter services
+  * When there isn't a token &rarr; adapter sends back all data
+  * When there is a token &rarr; adapter sends back only part of data based on the input in continuation-token
 
 #### Benefits
 
 * Simpler initial setup of adapter services
-  * Read all the data &rarr; cache them &rarr; send them to the caller
-* Less complexity without push/pull provider
+  * Read the data (either all or based on continuation token) &rarr; send them to the caller
+* Much less complexity without push/pull provider
 
 #### Cons
 
-* Not so simple development of the main app
-  * Getting all data from adapter services and needing to do the rest of the work with it
-  * Remembering which expenses are categorized already
-    * Having some internal "queue" (database table probably) of non-categorized expenses (to show to the user)
-    * With every call application would need to compare data in non-categorized table and incoming data
-* Bigger resource utilization
-  * Data are send multiple times from adapter to main app
-* Using database for caching in adapter services
-  * To not call Bank API to get all expenses every time but only new ones
-  * To not parse all mails but only new ones
+* Implementing continuation-tokens and special table to remember all expenses (and not having it in messaging queue)
+  * **This is also a good thing because we will only have 1 database for the whole app**
 
 ### 2. Push/Pull model
 
@@ -148,32 +165,36 @@ We have two sensible ways how to do it - via [REST](#1-rest-api) or [PUSH/PULL m
 * Having Queue already in place for later usage (showing the user the un-categorized expenses)
 * Implementing simple database to remember last datetime of expense data sent to queue
   * Only expenses which weren't put into the queue can be put there
+* We would need to trigger somehow the adapter to read and send all new expenses to the messaging provider
 
 #### Benefits
 
 * Simple development on the main app part
   * When adapter does its work the main app only reads a message from queue and shows it to the user
   * If user does not categorize it the message will remain in the queue until he does (via manual acknowledgements)
-* Using only simple database table in adapter services to remember datetime of last expense put into the queue
-* Built-in Eventual consistency - if something happens with adapters user can still categorize those message which were delivered previously
  
 #### Cons
 
 * Push/Pull provider needs to support DurableQueues and Persistent messages (along with manual acknowledgements)
   * Probably save data to the file-storage &rarr; setting docker correctly to allow it
+* Using (simple) database table in adapter services to remember datetime of last expense put into the queue
+* Complexity
+  * There would be many places in which we need to save current state (database in adapter, messaging queue, databases
+  in the main app)
+  * Potentially we could lose data if there is some problem
 
 ### Summary
 
-After careful consideration I am recommending to use Push/Pull model because of the overall simplicity for developers.
-Adapter services will be developed with same level of difficulty for REST or push/pull model (both approaches need to have database).
-Main application will be easier to develop with push/pull model because most of the work will do model provider.
-If we use a model provider with manual acknowledgements we can read all messages, show them to the user and acknowledge only
-those which user categorizes. Those who are not categorized will remain in queue for the user to process.
-Last but not least working with messaging can cause some trouble but in this hobby project I would like to try it out
+After careful consideration I am recommending to use REST model because of the overall simplicity for developers.
+Adapter services will be developed easier for REST model (no database in rest model, only continuation-token).
+Main application will be easier to develop with REST model because we save the data from adapters in database table,
+save continuation-token and next time we are calling an adapter we use that token, and we get only new data.
+Then the main app shows a user only expenses with un-categorized state from that table.
+
 
 ## Summary of design
 
-Application will be used only on **localhost** ([Explanation here](#summary)) and be using **Push/Pull model** ([Explanation for that here](#summary-1))
+Application will be used only on **localhost** ([Explanation here](#summary)) and be using **REST** ([Explanation for that here](#summary-1))
 
 ![Design schema](connector-api_design-schema.png)
 
@@ -187,33 +208,63 @@ For those who don't we will turn on sending mails to our inbox and then parse al
 
 ## Adapters
 
-* Adapters are going to work via Push/Pull model
+* Adapters are going to work via REST API
 * Every bank adapter will have standalone service
-* Every adapter would need to regularly check if there is a new data in Bank API or new mails to be parsed
-
-![PUSHPULL schema](connector-api_pushpull-schema.png)
 
 ## Specification
 
-This document outlines the interface and functionalities of the Bank Connector API, 
-tailored specifically for retrieving expense data within our custom banking application. 
+This document outlines the interface and functionalities of the Bank Connector API,
+tailored specifically for retrieving expense data within our custom banking application.
 It enables seamless integration with the bank's existing API for fetching expense-related information.
 
 ### Authentication and Authorization:
 
 We won't implement authentication and authorization because we plan to run the services only locally via Docker
 
-### Messages and their Descriptions:
+### Data Format:
 
-#### Expense message
+The bank's API returns all data in `JSON` format,
+containing details such as `amount`, `currency`, `category`, `description`, `timestamp` and `adapter_name`.
 
-* Name: `ExpenseMessage`
-* Description: This message contains the data of expense transaction for the user's account
+### Error Handling:
 
-##### Message content
+Developers should handle potential errors gracefully by checking for error responses and displaying relevant messages to users.
+Possible error codes include `4xx` client errors (e.g., invalid parameters) and `5xx` server errors.
 
-* Each expense message object includes fields like `amount`, `currency`, `timestamp` and `adapter_name`.
-* Other fields are nullable
+### Endpoints and their Descriptions:
+
+#### /expenses/history
+
+* Endpoint: `/expenses/history`
+* Method: `GET`
+* Description: This endpoint retrieves the history of expense transactions for the user's account.
+
+##### Request Parameters:
+
+Optional parameters:
+
+* `continuation_token`: Specifies the continuation-token which could be parsed to specific value by which adapter knows
+  from which point in time it needs to send data.
+  * Data Type: `String (Base64)`
+  * Example: `"continuation_token": "base64value"`
+  * Description: This parameter allows filtering expense transactions based on their transaction dates.
+  * If provided, only transactions that occurred on or after the specified continuation token value will be included in the response. 
+  * If omitted, transactions from any date will be included in the response.
+* `currency`: Specifies the currency in which the expense transactions should be retrieved.
+  * Data Type: `String`
+  * Example: `"currency": "USD"`
+  * Description: This parameter allows filtering expense transactions based on the currency used for the transactions. 
+  * If provided, only transactions in the specified currency will be included in the response.
+  * If omitted, expense transactions in all currencies will be included in the response.
+
+##### API Responses:
+
+###### Successful response (Status code 2xx):
+
+* The response contains
+  * a continuation-token string in Base64
+  * an array of expense objects, each representing a single transaction.
+    * Each expense object includes fields like `amount`, `currency`, `timestamp` and `adapter_name`.
 
 | Name             | Nullable | Data Type                | Description                                                                                                |
 |------------------|----------|--------------------------|------------------------------------------------------------------------------------------------------------|
@@ -229,7 +280,9 @@ We won't implement authentication and authorization because we plan to run the s
 
 ```json
 {
-  "ExpenseMessage1": {
+  "continuation_token": "base64value",
+  "expenses": [
+    {
       "amount": 50.00,
       "currency": "USD",
       "category": "Groceries",
@@ -238,9 +291,9 @@ We won't implement authentication and authorization because we plan to run the s
       "merchant": "ABC Supermarket",
       "payment_method": "Debit Card",
       "location": "123 Main St, City, Country",
-      "adapter_name": "Bank of America adapter"
+      "adapter_name": "Adapter 1"
     },
-  "ExpenseMessage2": {
+    {
       "amount": 20.00,
       "currency": "USD",
       "category": null,
@@ -249,8 +302,23 @@ We won't implement authentication and authorization because we plan to run the s
       "merchant": "XYZ Restaurant",
       "payment_method": "Credit Card",
       "location": "456 Elm St, City, Country",
-      "adapter_name": "Bank of America adapter"
+      "adapter_name": "Adapter 1"
     }
+  ]
+}
+
+```
+
+##### Error responses (Status code 4xx and 5xx):
+
+* Error messages and corresponding status codes will be returned in case of invalid requests or server errors.
+
+```json
+{
+  "error": {
+    "code": 400,
+    "message": "Invalid date format provided"
+  }
 }
 
 ```
@@ -259,27 +327,20 @@ We won't implement authentication and authorization because we plan to run the s
 
 Inputs for each adapter are data got from the bank (either via Bank API or mail parsing/etc.)
 
-To not send the same message twice adapters needs to implement some way how to remember which messages were sent.
-Our recommendation is to have simple database table in which you will write last `DateTime` of the expense sent to the queue.
+To get only new data adapters need to implement continuation-token. They will get it in GET request and use it
+to respond only with new data. Continuation-token could be as simple as `DateTime` value in Base64 format
 
-This way if the expense data are parsed and the date and time is AFTER your saved datetime you know it is a new expense,
-and you add it to the queue (and of course update the database value)
+For Bank API you can save the value and send REST request to your Bank API to only get expenses newer than <datetime value>
 
-For Bank API you can save the value and send REST request to your Bank API to only get expenses newer than <datetime saved>
-
-For Mail parser you can parse mails from the TOP and when you find mail older than <datetime saved> you stop parsing. Or you
-could just delete older mails and have only new ones in your inbox (empty inbox means every expense was added to the queue)
+For Mail parser you can parse mails from the TOP and when you find mail older than <datetime value> you stop parsing.
 
 ### Outputs
 
-Outputs of each adapter are messages sent into the `Queue`.
+Outputs of each adapter are data send as a Response to GET request
 
-Queue has to be `Durable` and messages needs to be `Persistent`.
-Push/Pull model provider needs to be set to save data on disk. We will be using Docker to run the whole app which means
-when user quits Docker we **need to keep all messages**
+Either adapter sends all data back (no continuation-token in a request) or sends only new data back (continuation-token
+was present in a request)
 
-The main application will use `Manual Acknowledgement` for the messages in queue and tag message as delivered only after
-user categorizes the expense. If he does not the message stays in queue and user will see it again when he goes to the 
-expenses-to-be-categorized page
+In every response there needs to be a continuation-token generated by adapter so the main app can save it and use it later
 
 ![Flow schema](connector-api_flow.png)
