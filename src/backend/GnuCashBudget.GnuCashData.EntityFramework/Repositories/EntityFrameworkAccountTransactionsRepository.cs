@@ -1,7 +1,7 @@
 using GnuCashBudget.GnuCashData.Abstractions;
 using GnuCashBudget.GnuCashData.Abstractions.Models;
 using GnuCashBudget.GnuCashData.EntityFramework.Entities;
-using GnuCashBudget.GnuCashData.EntityFramework.Helpers;
+using GnuCashBudget.GnuCashData.EntityFramework.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace GnuCashBudget.GnuCashData.EntityFramework.Repositories;
@@ -81,7 +81,7 @@ public class EntityFrameworkAccountTransactionsRepository(GnuCashContext context
     {
         return new TransactionEntity
         {
-            Id = SimpleHelper.GenerateGuid(),
+            Id = Guid.NewGuid().ToGnuCashFormat(),
             CurrencyId = commodity.Id,
             Description = transaction.Description,
             EntryDate = transaction.EntryDate,
@@ -94,7 +94,7 @@ public class EntityFrameworkAccountTransactionsRepository(GnuCashContext context
     {
         return new SplitEntity
         {
-            Id = SimpleHelper.GenerateGuid(),
+            Id = Guid.NewGuid().ToGnuCashFormat(),
             TxId = transactionId,
             AccountId = account.Id,
             Memo = string.Empty,

@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using GnuCashBudget.GnuCashData.Abstractions;
 using GnuCashBudget.GnuCashData.Abstractions.Models;
 using GnuCashBudget.GnuCashData.EntityFramework.Entities;
-using GnuCashBudget.GnuCashData.EntityFramework.Helpers;
+using GnuCashBudget.GnuCashData.EntityFramework.Extensions;
 using Abstract = GnuCashBudget.GnuCashData.Abstractions.Models;
 using AccountType = GnuCashBudget.GnuCashData.EntityFramework.Entities.AccountType;
 
@@ -94,7 +94,7 @@ public class EntityFrameworkAccountsRepository(GnuCashContext dataContext)
     {
         return new AccountEntity
         {
-            Id = SimpleHelper.GenerateGuid(),
+            Id = Guid.NewGuid().ToGnuCashFormat(),
             Name = $"{type.ToString()}",
             Type = (AccountType)type,
             CommodityId = commodityId,
