@@ -7,15 +7,10 @@ using AccountType = GnuCashBudget.GnuCashData.EntityFramework.Entities.AccountTy
 
 namespace GnuCashBudget.GnuCashData.EntityFramework.Repositories;
 
-public abstract class EntityFrameworkAccountTreeBaseRepository
+public abstract class EntityFrameworkAccountTreeBaseRepository(GnuCashContext context)
 {
-    protected GnuCashContext Context { get; }
+    protected GnuCashContext Context { get; } = context;
 
-    protected EntityFrameworkAccountTreeBaseRepository(GnuCashContext context)
-    {
-        Context = context;
-    }
-    
     protected ImmutableList<AccountWithCommodity> FlattenAccountTree(ImmutableList<AccountWithCommodity> accountsTree)
     {
         var accounts = new List<AccountWithCommodity>(accountsTree);
@@ -27,7 +22,7 @@ public abstract class EntityFrameworkAccountTreeBaseRepository
         return accounts.ToImmutableList();
     }
 
-    protected async Task<ImmutableList<AccountWithCommodity>> GetFullAccountTree()
+    protected async Task<ImmutableList<AccountWithCommodity>> GetFullAccountTree(bool includeRootAccount = false)
     {
         var accounts = await Context.Accounts
             .Join(Context.Commodities, account => account.CommodityId, commodity => commodity.Id,
@@ -38,12 +33,17 @@ public abstract class EntityFrameworkAccountTreeBaseRepository
         var rootAccountWrapper = new AccountWithCommodity
         {
             Account = MapAccount(rootAccount.Account),
-            Commodity = rootAccount.Commodity
+            Commodity = MapCommodity(rootAccount.Commodity)
         };
 
         AssignChildren(rootAccountWrapper);
         BuildFullNames(rootAccountWrapper);
 
+        if (includeRootAccount)
+        {
+            return new List<AccountWithCommodity>() { rootAccountWrapper }.ToImmutableList();
+        }
+        
         return rootAccountWrapper.Children
             .ToImmutableList();
 
@@ -51,7 +51,7 @@ public abstract class EntityFrameworkAccountTreeBaseRepository
         {
             account.Children = accounts
                 .Where(x => x.Account.ParentId == account.Account.Id)
-                .Select(x => new AccountWithCommodity { Account = MapAccount(x.Account), Commodity = x.Commodity, Parent = account })
+                .Select(x => new AccountWithCommodity { Account = MapAccount(x.Account), Commodity = MapCommodity(x.Commodity), Parent = account })
                 .ToList();
 
             foreach (var child in account.Children)
@@ -72,19 +72,26 @@ public abstract class EntityFrameworkAccountTreeBaseRepository
         }
     }
 
-    private Account MapAccount(AccountEntity entity)
+    protected Account MapAccount(AccountEntity entity)
         => new(entity.Id,
             entity.Name,
             "UNKNOWN",
             "UNKNOWN",
             (Abstract.AccountType)entity.Type,
-            ImmutableList<Account>.Empty);
+            ImmutableList<Account>.Empty,
+            entity.ParentId);
+
+    private Commodity MapCommodity(CommodityEntity entity)
+        => new(entity.Id,
+            entity.Namespace,
+            entity.Mnemonic,
+            entity.Fraction);
 
     protected class AccountWithCommodity
     {
         public Account? Account { get; init; }
         
-        public CommodityEntity? Commodity { get; init; }
+        public Commodity? Commodity { get; init; }
         public List<AccountWithCommodity> Children { get; set; } = new();
 
         public string? FullName { get; set; }
