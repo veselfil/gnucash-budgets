@@ -2,7 +2,6 @@ namespace GnuCashBudget.Adapter.Example.Models;
 
 public class ExampleExpense
 {
-    public string TransactionId { get; set; }
     public decimal Amount { get; set; }
     public string Currency { get; set; }
     public string? Category { get; set; }

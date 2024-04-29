@@ -19,5 +19,5 @@ endpoints (more in `CONNECTOR-API.md` docs)
 This is only example project so many things aren't done correctly. Be aware of that if you copy this project.
 
 For instance, you won't probably have data saved in `appsettings.Development.json` - you will either get them from 
-bank's API or parse them from mail/somewhere. I am using `ExampleOptions` because it was fast and easy how to get data
-to show you how it works
+bank's API or parse them from mail/somewhere. I am using `ExampleOptions` because it was fast and easy way to show you
+how it works

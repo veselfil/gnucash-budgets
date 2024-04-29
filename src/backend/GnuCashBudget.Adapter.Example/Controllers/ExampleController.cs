@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using GnuCashBudget.Adapter.Abstractions.Models;
 using GnuCashBudget.Adapter.Example.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +9,9 @@ namespace GnuCashBudget.Adapter.Example.Controllers;
 public class ExampleController(IAdapterService adapterService) : Controller
 {
     [HttpGet("history")]
-    public async Task<ImmutableList<Expense>> GetExpensesHistory(
-        [FromQuery] DateTime? dateFrom,
-        [FromQuery] DateTime? dateTo)
+    public async Task<AdapterResponse> GetExpensesHistory(
+        [FromQuery] string? continuationToken)
     {
-        return await adapterService.GetExpensesHistory();
+        return await adapterService.GetExpensesHistory(continuationToken);
     }
 }
