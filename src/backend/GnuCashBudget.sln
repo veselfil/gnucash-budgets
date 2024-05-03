@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Adapter.Abstr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.Adapter.Example", "GnuCashBudget.Adapter.Example\GnuCashBudget.Adapter.Example.csproj", "{B5625816-2384-4DE0-A925-E06175C2A8AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnuCashBudget.GnuCashData.Generator", "GnuCashBudget.GnuCashData.Generator\GnuCashBudget.GnuCashData.Generator.csproj", "{EF9B3BA8-CE59-42C8-9430-084F5045E7B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{B5625816-2384-4DE0-A925-E06175C2A8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5625816-2384-4DE0-A925-E06175C2A8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5625816-2384-4DE0-A925-E06175C2A8AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF9B3BA8-CE59-42C8-9430-084F5045E7B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF9B3BA8-CE59-42C8-9430-084F5045E7B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF9B3BA8-CE59-42C8-9430-084F5045E7B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF9B3BA8-CE59-42C8-9430-084F5045E7B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

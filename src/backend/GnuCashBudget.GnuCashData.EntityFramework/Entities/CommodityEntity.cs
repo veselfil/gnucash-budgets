@@ -16,6 +16,7 @@ namespace GnuCashBudget.GnuCashData.EntityFramework.Entities;
 );*/
 
 
+[Table("commodities")]
 public class CommodityEntity
 {
     [Column("guid")]
@@ -34,10 +35,10 @@ public class CommodityEntity
     public string? Cusip { get; set; }
     
     [Column("fraction")]
-    public int? Fraction { get; set; }
+    public int Fraction { get; set; }
     
     [Column("quote_flag")]
-    public int? QuoteFlag { get; set; }
+    public int QuoteFlag { get; set; }
     
     [Column("quote_source")]
     public string? QuoteSource { get; set; }

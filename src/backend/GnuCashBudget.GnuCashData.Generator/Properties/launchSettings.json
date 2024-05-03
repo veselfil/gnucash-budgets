@@ -1,0 +1,16 @@
+﻿{
+  "profiles": {
+    "GnuCashBudget.GnuCashData.Generator - Dev": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "GnuCashBudget.GnuCashData.Generator - Prod": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Production"
+      }
+    }
+  }
+}
