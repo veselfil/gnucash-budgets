@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using GnuCashBudget.Adapter.Abstractions;
+using GnuCashBudget.Adapter.Abstractions.Enums;
 using GnuCashBudget.Adapter.Abstractions.Models;
 using GnuCashBudget.Adapter.Example.Models;
 
@@ -40,9 +41,19 @@ public class Adapter(Adaptee adaptee) : IBankTarget
             Description = exampleExpense.Description,
             Timestamp = exampleExpense.Timestamp,
             Merchant = exampleExpense.Merchant,
-            PaymentMethod = exampleExpense.PaymentMethod,
+            PaymentMethod = ParsePaymentMethod(exampleExpense.PaymentMethod),
             Location = exampleExpense.Location,
         };
+    }
+
+    private PaymentMethod? ParsePaymentMethod(string? value)
+    {
+        if (Enum.TryParse<PaymentMethod>(value, out var result))
+        {
+            return result;
+        }
+
+        return null;
     }
 
     private DateTime DecodeContinuationToken(string continuationToken)
