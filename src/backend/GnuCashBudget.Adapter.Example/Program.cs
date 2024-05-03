@@ -1,7 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GnuCashBudget.Adapter.Abstractions;
+using GnuCashBudget.Adapter.Example;
 using GnuCashBudget.Adapter.Example.Configuration;
-using GnuCashBudget.Adapter.Example.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,9 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddOptions<ExampleOptions>().BindConfiguration(ExampleOptions.Example);
 
-builder.Services.AddScoped<IAdapterService, AdapterService>();
+// First we need to register Adaptee because Adapter is using it in constructor
+builder.Services.AddScoped<Adaptee>();
+builder.Services.AddScoped<IBankTarget, Adapter>();
 
 var app = builder.Build();
 
