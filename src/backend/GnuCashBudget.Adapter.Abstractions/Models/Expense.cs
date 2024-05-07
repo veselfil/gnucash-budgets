@@ -1,3 +1,6 @@
+using System.Text.Json.Serialization;
+using GnuCashBudget.Adapter.Abstractions.Enums;
+
 namespace GnuCashBudget.Adapter.Abstractions.Models;
 
 public class Expense
@@ -8,6 +11,8 @@ public class Expense
     public string? Description { get; set; }
     public string Timestamp { get; set; }
     public string? Merchant { get; set; }
-    public string? PaymentMethod { get; set; }
+    
+    [JsonConverter(typeof(JsonStringEnumConverter))] 
+    public PaymentMethod? PaymentMethod { get; set; }
     public string? Location { get; set; }
 }

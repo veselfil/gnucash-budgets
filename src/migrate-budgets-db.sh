@@ -1,11 +1,14 @@
 read -p "Enter database path [../../../testfiles/gnucash_sqlite.budgets]: " db_path
 if [ -z "$db_path" ]; then
-  db_path="../../../testfiles/gnucash_sqlite.budgets"
+#  db_path="../../../testfiles/gnucash_sqlite.budgets"
+#  db_path="/Users/mike/Documents/GnuCash/finance.sqlite.gnucash"
+  db_path="/Users/mike/Dev/gnucash-budgets/testfiles/finance.budgets"
 fi
 
 read -p "Enter project path [./backend/GnuCashBudget.Data.EntityFramework]: " project_path
 if [ -z "$project_path" ]; then
-  project_path="./backend/GnuCashBudget.Data.EntityFramework"
+#  project_path="./backend/GnuCashBudget.Data.EntityFramework"
+  project_path="/Users/mike/Dev/gnucash-budgets/src/backend/GnuCashBudget.Data.EntityFramework"
 fi
 
 read -p "Enter migration name: " migration_name
