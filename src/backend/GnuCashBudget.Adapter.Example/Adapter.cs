@@ -25,7 +25,7 @@ public class Adapter(Adaptee adaptee) : IBankTarget
         var response = new AdapterResponse
         {
             ContinuationToken = newContinuationToken,
-            Expenses = expenses.Select(MapToExpense),
+            Transactions = expenses.Select(MapToExpense),
         };
 
         return Task.FromResult(response);
