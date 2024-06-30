@@ -38,14 +38,14 @@ public class WebDriver(HttpClient httpClient, ScenarioContext scenarioContext)
     {
         var result = scenarioContext.Get<AdapterResponse>();
         
-        result!.Expenses.Should().NotBeEmpty();
+        result!.Transactions.Should().NotBeEmpty();
     }
 
     public void CheckResponseContentContainsExpenseData(int expectedObjects)
     {
         var result = scenarioContext.Get<AdapterResponse>();
 
-        result.Expenses.Count().Should().Be(expectedObjects);
+        result.Transactions.Count().Should().Be(expectedObjects);
     }
 
     private async Task ParseAdapterResponse()
