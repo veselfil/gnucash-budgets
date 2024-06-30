@@ -21,3 +21,14 @@ This is only example project so many things aren't done correctly. Be aware of t
 For instance, you won't probably have data saved in `appsettings.Development.json` - you will either get them from 
 bank's API or parse them from mail/somewhere. I am using `ExampleOptions` because it was fast and easy way to show you
 how it works
+
+## Docker-Compose
+
+In this example project there is a `docker-compose.yml` file which has integration tests setup
+
+That means we can use integration tests in the pipeline, see tests results and fail the build if tests are not correct
+
+SpecFlow is generating TestResults by default (with NuGet package `SpecFlow.Plus.LivingDocPlugin` installed) and we as
+a user just need to save the file (or make .trx file from it and give it to Azure for instance)
+
+There are some plugins like `LivingDoc` which will make it nice-looking

@@ -1,0 +1,29 @@
+﻿services:
+  gnucashbudget.adapter.example:
+    image: gnucashbudget.adapter.example
+    ports:
+      - 8080:8080
+      - 8081:8081
+    build:
+      context: ./GnuCashBudget.Adapter.Example
+      dockerfile: GnuCashBudget.Adapter.Example/Dockerfile
+    networks:
+      integration-test:
+
+  gnucashbudget.adapter.tests:
+    image: gnucashbudget.adapter.tests
+    build:
+      context: ./GnuCashBudget.Adapter.Tests
+      dockerfile: GnuCashBudget.Adapter.Tests/Dockerfile
+    entrypoint: dotnet test --logger html --results-directory /var/temp
+    environment:
+      - AdapterAddress=http://gnucashbudget.adapter.example:8080
+    depends_on:
+      - gnucashbudget.adapter.example
+    volumes:
+      - /tmp/results:/var/temp
+    networks:
+      integration-test:
+
+networks:
+  integration-test:
