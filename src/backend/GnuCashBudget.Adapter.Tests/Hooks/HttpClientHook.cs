@@ -10,7 +10,7 @@ public sealed class HttpClientHook(IObjectContainer objectContainer)
     public void BeforeScenario()
     {
         var configuration = objectContainer.Resolve<IConfiguration>();
-        var baseAddress = configuration["AdapterAddress"] ?? throw new Exception("BaseAddress is not specified");
+        var baseAddress = configuration["BaseAddress"] ?? throw new Exception("BaseAddress is not specified");
         
         var handler = new HttpClientHandler();
         var client = new HttpClient(handler, false);
